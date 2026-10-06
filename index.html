@@ -14,6 +14,15 @@
     * { box-sizing:border-box }
     html { scroll-behavior:smooth }
     body { margin:0; color:var(--ink); background:var(--paper); font-family:var(--sans); -webkit-font-smoothing:antialiased }
+    .bubble-field { position:fixed; z-index:0; inset:0; overflow:hidden; pointer-events:none }
+    .bubble { position:absolute; bottom:-70px; left:var(--x); width:var(--size); aspect-ratio:1; border:1.5px solid #58cdb8b8; border-radius:50%; background:radial-gradient(ellipse at 32% 25%,#ffffffb0 0 6%,#b8fff34a 28%,#53d8c536 68%,#ffffff59 100%); box-shadow:inset 1px 1px 5px #ffffffc2,inset -2px -3px 8px #56d9c54a,0 0 16px #7ce6d344; animation:bubble-rise var(--duration) linear var(--delay) infinite; will-change:transform,opacity }
+    .bubble::before { position:absolute; top:17%; left:22%; width:24%; height:13%; border-radius:50%; background:#ffffffb3; content:""; filter:blur(1px); transform:rotate(-35deg) }
+    .bubble::after { position:absolute; inset:-3px; border:1px solid #b3fff0; border-radius:50%; content:""; opacity:0; transform:scale(.55) }
+    .bubble:nth-child(3n) { border-color:#55d8c9d1; background:radial-gradient(ellipse at 35% 25%,#ffffffc2 0 6%,#baffed5c 28%,#54dfc542 68%,#ffffff69 100%) }
+    .bubble:nth-child(3n)::after { animation:bubble-pop var(--duration) linear var(--delay) infinite }
+    .site-content { position:relative; z-index:1 }
+    @keyframes bubble-rise { 0% { opacity:0; transform:translate3d(0,0,0) scale(.62) } 8% { opacity:.8 } 72% { opacity:.62 } 88% { opacity:.7; transform:translate3d(var(--drift),-88vh,0) scale(1) } 93% { opacity:.32; transform:translate3d(var(--drift),-94vh,0) scale(1.24) } 100% { opacity:0; transform:translate3d(var(--drift),-105vh,0) scale(1.42) } }
+    @keyframes bubble-pop { 0%,87% { opacity:0; transform:scale(.55) } 90% { opacity:.9; transform:scale(1.08) } 95%,100% { opacity:0; transform:scale(1.85) } }
     button,input,select,textarea { font:inherit }
     button { cursor:pointer }
     a { color:inherit; text-decoration:none }
@@ -99,6 +108,7 @@
     .footer-note,.footer-contact { color:#ffffffb0; font-size:10px }
     .footer-contact { display:inline-flex; align-items:center; gap:8px }
     .footer-contact svg { width:15px; height:15px }
+    .footer-contacts { display:flex; flex-wrap:wrap; align-items:center; gap:16px }
     .copyright { max-width:1280px; margin:25px auto 0; padding-top:15px; border-top:1px solid #ffffff26; color:#ffffff73; font-size:9px }
     dialog { width:min(500px,calc(100% - 28px)); max-height:min(760px,calc(100% - 28px)); padding:0; border:1px solid #e1dfd6; border-radius:4px; color:var(--ink); background:var(--paper); box-shadow:0 20px 80px #0e1c2333 }
     dialog::backdrop { background:#0f1e2594; backdrop-filter:blur(3px) }
@@ -123,7 +133,7 @@
     .toast { position:fixed; z-index:7; bottom:87px; left:50%; max-width:calc(100vw - 32px); padding:12px 17px; color:white; background:var(--deep); box-shadow:0 5px 25px #102e2733; font-size:11px; opacity:0; pointer-events:none; transform:translate(-50%,10px); transition:opacity .2s,transform .2s }
     .toast.show { opacity:1; transform:translate(-50%,0) }
     @keyframes arrive { from { opacity:0; transform:translateY(9px) } to { opacity:1; transform:translateY(0) } }
-    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important } .bubble-field { display:none } }
     @media(max-width:860px) {
       .header-inner { padding:0 23px; grid-template-columns:1fr auto }
       .nav-links { display:none }
@@ -176,6 +186,19 @@
   </style>
 </head>
 <body>
+  <div class="bubble-field" aria-hidden="true">
+    <span class="bubble" style="--x:7%;--size:32px;--duration:14s;--delay:-8s;--drift:25px"></span>
+    <span class="bubble" style="--x:16%;--size:48px;--duration:17s;--delay:-2s;--drift:-35px"></span>
+    <span class="bubble" style="--x:27%;--size:27px;--duration:12s;--delay:-10s;--drift:28px"></span>
+    <span class="bubble" style="--x:38%;--size:43px;--duration:16s;--delay:-5s;--drift:-24px"></span>
+    <span class="bubble" style="--x:49%;--size:31px;--duration:13s;--delay:-1s;--drift:36px"></span>
+    <span class="bubble" style="--x:59%;--size:54px;--duration:18s;--delay:-12s;--drift:-30px"></span>
+    <span class="bubble" style="--x:69%;--size:36px;--duration:15s;--delay:-7s;--drift:22px"></span>
+    <span class="bubble" style="--x:78%;--size:47px;--duration:17s;--delay:-3s;--drift:-38px"></span>
+    <span class="bubble" style="--x:87%;--size:28px;--duration:12s;--delay:-9s;--drift:30px"></span>
+    <span class="bubble" style="--x:95%;--size:40px;--duration:16s;--delay:-4s;--drift:-25px"></span>
+  </div>
+  <div class="site-content">
   <div class="announcement">ENVÍOS A TODA COLOMBIA · PAGOS SEGUROS · HECHO CON DETALLE</div>
   <header class="site-header">
     <div class="header-inner">
@@ -185,7 +208,7 @@
     </div>
   </header>
   <main>
-    <section class="hero" id="inicio"><div class="hero-content"><span class="eyebrow">Pequeños tesoros, grandes historias</span><h1>El brillo de ser tú.</h1><p class="hero-copy">Joyas pensadas para acompañar tus momentos favoritos. Encuentra esa pieza que, desde el primer instante, se siente tuya.</p><div class="hero-actions"><a class="button button-light" href="#coleccion">Descubrir la colección <span aria-hidden="true">→</span></a><a class="button button-outline" href="https://wa.me/573212276095?text=Hola%2C%20quiero%20conocer%20la%20colecci%C3%B3n%20de%20L%C3%BAmina." target="_blank" rel="noopener">Hablemos por WhatsApp</a></div></div></section>
+    <section class="hero" id="inicio"><div class="hero-content"><span class="eyebrow">Pequeños tesoros, grandes historias</span><h1>El brillo de ser tú.</h1><p class="hero-copy">Joyas pensadas para acompañar tus momentos favoritos. Encuentra esa pieza que, desde el primer instante, se siente tuya.</p><div class="hero-actions"><a class="button button-light" href="#coleccion">Descubrir la colección <span aria-hidden="true">→</span></a></div></div></section>
     <section class="benefits" aria-label="Beneficios">
       <div class="benefit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v11H3zM14 11h4l3 3v4h-7z"/><circle cx="7.5" cy="18.5" r="1.5"/><circle cx="17.5" cy="18.5" r="1.5"/></svg>Envíos a todo Colombia</div>
       <div class="benefit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7h-9M14 17H4"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>Atención cercana y personalizada</div>
@@ -197,11 +220,12 @@
     </section>
     <section class="story" id="historia"><div class="story-image" role="img" aria-label="Detalle de joyas doradas"></div><div class="story-copy"><p class="section-kicker">Con cariño, desde Colombia</p><h2>Una joya guarda más que un brillo.</h2><p>Guarda una promesa, un recuerdo, una versión de ti. En Betel creemos en las piezas que se vuelven parte de tu historia, elegidas con cuidado y hechas para durar.</p><a class="text-whatsapp" href="https://wa.me/573212276095?text=Hola%2C%20quisiera%20recibir%20asesor%C3%ADa%20personalizada%20sobre%20una%20joya." target="_blank" rel="noopener">Escríbenos, estamos para ayudarte <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></section>
   </main>
-  <footer class="footer"><div class="footer-inner"><div class="footer-brand">Betel <span class="footer-note">· Joyería para tus momentos</span></div><a class="footer-contact" href="https://wa.me/573212276095" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M9 9a4 4 0 0 0 6 6l-1.5-1.5-1.2.5a5 5 0 0 1-2.3-2.3l.5-1.2Z"/></svg>+57 321 227 6095</a></div><div class="copyright">© <span id="year"></span> Betel Joyería. Hecho con cariño en Colombia.</div></footer>
+  <footer class="footer"><div class="footer-inner"><div class="footer-brand">Betel <span class="footer-note">· Joyería para tus momentos</span></div><div class="footer-contacts"><a class="footer-contact" href="https://wa.me/573212276095" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M9 9a4 4 0 0 0 6 6l-1.5-1.5-1.2.5a5 5 0 0 1-2.3-2.3l.5-1.2Z"/></svg>321 227 6095</a><a class="footer-contact" href="mailto:joyeriabetel12@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>joyeriabetel12@gmail.com</a></div></div><div class="copyright">© <span id="year"></span> Betel Joyería. Hecho con cariño en Colombia.</div></footer>
   <dialog id="product-dialog" aria-labelledby="dialog-title"><div class="dialog-head"><div><h3 id="dialog-title">Agregar una joya</h3><p>Completa los detalles para tu catálogo.</p></div><button class="close-button" id="close-dialog" type="button" aria-label="Cerrar">×</button></div>
     <form class="product-form" id="product-form"><input id="product-id" type="hidden"><div class="field full"><label for="product-name">Nombre de la joya</label><input id="product-name" name="name" required maxlength="60" placeholder="Ej. Aretes Aurora"></div><div class="field"><label for="product-price">Precio (COP)</label><input id="product-price" name="price" type="number" min="1" step="100" required placeholder="Ej. 89000"></div><div class="field"><label for="product-category">Categoría</label><select id="product-category" name="category" required><option value="Collares">Collares</option><option value="Aretes">Aretes</option><option value="Anillos">Anillos</option><option value="Pulseras">Pulseras</option></select></div><div class="field full"><label for="product-description">Descripción</label><textarea id="product-description" name="description" maxlength="110" placeholder="Material, acabado o detalle especial"></textarea></div><div class="field full"><label for="product-image">Foto de la joya</label><input id="product-image" name="image" type="file" accept="image/*"><span class="file-hint">Elige una imagen desde tu dispositivo. Se ajustará para guardar espacio. Al editar, dejar vacío conserva la foto actual.</span></div><p class="form-error" id="form-error" role="alert"></p><div class="form-footer"><button class="cancel-button" id="cancel-dialog" type="button">Cancelar</button><button class="save-button" id="save-product" type="submit">Guardar joya</button></div></form>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
   <script>
     (() => {
       const STORAGE_KEY = "betel-joyeria-products-v1";
