@@ -14,15 +14,6 @@
     * { box-sizing:border-box }
     html { scroll-behavior:smooth }
     body { margin:0; color:var(--ink); background:var(--paper); font-family:var(--sans); -webkit-font-smoothing:antialiased }
-    .bubble-field { position:fixed; z-index:0; inset:0; overflow:hidden; pointer-events:none }
-    .bubble { position:absolute; bottom:-70px; left:var(--x); width:var(--size); aspect-ratio:1; border:1.5px solid #58cdb8b8; border-radius:50%; background:radial-gradient(ellipse at 32% 25%,#ffffffb0 0 6%,#b8fff34a 28%,#53d8c536 68%,#ffffff59 100%); box-shadow:inset 1px 1px 5px #ffffffc2,inset -2px -3px 8px #56d9c54a,0 0 16px #7ce6d344; animation:bubble-rise var(--duration) linear var(--delay) infinite; will-change:transform,opacity }
-    .bubble::before { position:absolute; top:17%; left:22%; width:24%; height:13%; border-radius:50%; background:#ffffffb3; content:""; filter:blur(1px); transform:rotate(-35deg) }
-    .bubble::after { position:absolute; inset:-3px; border:1px solid #b3fff0; border-radius:50%; content:""; opacity:0; transform:scale(.55) }
-    .bubble:nth-child(3n) { border-color:#55d8c9d1; background:radial-gradient(ellipse at 35% 25%,#ffffffc2 0 6%,#baffed5c 28%,#54dfc542 68%,#ffffff69 100%) }
-    .bubble:nth-child(3n)::after { animation:bubble-pop var(--duration) linear var(--delay) infinite }
-    .site-content { position:relative; z-index:1 }
-    @keyframes bubble-rise { 0% { opacity:0; transform:translate3d(0,0,0) scale(.62) } 8% { opacity:.8 } 72% { opacity:.62 } 88% { opacity:.7; transform:translate3d(var(--drift),-88vh,0) scale(1) } 93% { opacity:.32; transform:translate3d(var(--drift),-94vh,0) scale(1.24) } 100% { opacity:0; transform:translate3d(var(--drift),-105vh,0) scale(1.42) } }
-    @keyframes bubble-pop { 0%,87% { opacity:0; transform:scale(.55) } 90% { opacity:.9; transform:scale(1.08) } 95%,100% { opacity:0; transform:scale(1.85) } }
     button,input,select,textarea { font:inherit }
     button { cursor:pointer }
     a { color:inherit; text-decoration:none }
@@ -76,21 +67,38 @@
     .product-image-wrap { position:relative; overflow:hidden; aspect-ratio:.89; background:#eeece5 }
     .product-image { width:100%; height:100%; display:block; object-fit:cover; transition:transform .5s }
     .product-card:hover .product-image { transform:scale(1.035) }
+    .carousel-control { position:absolute; top:50%; width:34px; height:34px; display:grid; place-items:center; padding:0; border:1px solid #ffffffa6; border-radius:50%; color:var(--deep); background:#fbfaf7d9; box-shadow:0 2px 10px #102e2726; transform:translateY(-50%); transition:background .2s }
+    .carousel-control:hover { background:white }
+    .carousel-control svg { width:16px; height:16px }
+    .carousel-previous { left:10px }
+    .carousel-next { right:10px }
+    .image-count { position:absolute; right:10px; bottom:10px; padding:5px 8px; border-radius:20px; color:white; background:#102e27b8; font-size:9px }
+    .carousel-add-photos { position:absolute; z-index:1; bottom:10px; left:10px; min-height:30px; padding:0 10px; border:1px solid #ffffffa6; border-radius:20px; color:var(--deep); background:#fbfaf7e8; font-size:9px; font-weight:600; box-shadow:0 2px 10px #102e2726 }
+    .carousel-add-photos:hover { background:white }
     .product-tag { position:absolute; top:12px; left:12px; padding:6px 8px; color:var(--forest); background:#fbfaf7f0; font-size:8px; letter-spacing:.1em; text-transform:uppercase }
     .product-meta { display:flex; align-items:start; justify-content:space-between; gap:8px; padding-top:12px }
     .product-name { margin:0; font:500 18px/1.25 var(--serif) }
-    .product-description { margin:6px 0 0; color:var(--muted); font-size:10px; line-height:1.55 }
     .product-price { flex:none; margin-top:3px; color:var(--forest); font-size:12px; font-weight:700; white-space:nowrap }
     .product-actions { display:flex; gap:8px; margin-top:12px }
-    .buy-button,.edit-product-button,.delete-product-button { min-height:34px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid var(--forest); border-radius:2px; font-size:10px; transition:background .2s,color .2s }
+    .buy-button,.details-button,.edit-product-button,.delete-product-button { min-height:34px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid var(--forest); border-radius:2px; font-size:10px; transition:background .2s,color .2s }
     .buy-button { flex:1; color:white; background:var(--forest) }
     .buy-button:hover { background:var(--deep) }
     .buy-button svg { width:14px; height:14px }
+    .details-button { padding:0 11px; color:var(--forest); background:transparent; white-space:nowrap }
+    .details-button:hover { color:white; background:var(--forest) }
     .edit-product-button,.delete-product-button { padding:0 10px }
     .edit-product-button { color:var(--forest); background:transparent }
     .edit-product-button:hover { color:white; background:var(--forest) }
     .delete-product-button { border-color:#d7b8b6; color:#99534e; background:transparent }
     .delete-product-button:hover { color:white; background:#99534e }
+    .details-content { padding:24px 25px }
+    #details-dialog { overflow-y:auto }
+    .details-category { display:inline-block; padding:6px 9px; color:var(--forest); background:#edf0e9; font-size:9px; letter-spacing:.1em; text-transform:uppercase }
+    .details-price { margin:15px 0 0; color:var(--forest); font-size:15px; font-weight:700 }
+    .details-description { margin:18px 0 0; color:#555a52; font-size:12px; line-height:1.8; white-space:pre-wrap; overflow-wrap:anywhere }
+    .details-description strong { color:var(--ink); font-weight:700 }
+    .details-description.is-empty { color:var(--muted); font-style:italic }
+    .details-footer { display:flex; justify-content:flex-end; padding:0 25px 23px }
     .admin-only { display:none }
     body.admin-mode .admin-only { display:inline-flex }
     body.admin-mode .buy-button { display:none }
@@ -123,6 +131,15 @@
     .field input,.field select,.field textarea { width:100%; min-height:39px; padding:9px 10px; border:1px solid #deddd5; border-radius:2px; outline:none; color:var(--ink); background:white; font-size:11px }
     .field textarea { min-height:64px; resize:vertical }
     .field input:focus,.field select:focus,.field textarea:focus { border-color:var(--forest) }
+    .image-picker { width:max-content; min-height:38px; display:inline-flex; align-items:center; justify-content:center; padding:0 13px; border:1px solid var(--forest); border-radius:2px; color:white; background:var(--forest); font-size:10px; font-weight:600; cursor:pointer }
+    .image-picker:hover { background:var(--deep) }
+    .image-picker:focus-within { outline:2px solid var(--gold); outline-offset:2px }
+    .visually-hidden { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; clip-path:inset(50%); border:0 }
+    .image-preview-list { display:flex; flex-wrap:wrap; gap:9px; max-height:155px; overflow:auto }
+    .image-preview { position:relative; width:64px; height:64px; flex:none; overflow:hidden; border:1px solid var(--line); border-radius:2px; background:#eeece5 }
+    .image-preview img { width:100%; height:100%; display:block; object-fit:cover }
+    .remove-image { position:absolute; top:3px; right:3px; width:20px; height:20px; display:grid; place-items:center; padding:0; border:0; border-radius:50%; color:white; background:#102e27d9; font-size:15px; line-height:1 }
+    .image-preview-empty { color:var(--muted); font-size:10px }
     .file-hint { color:var(--muted); font-size:9px; line-height:1.5 }
     .form-error { grid-column:1/-1; min-height:14px; margin:0; color:#a53d37; font-size:10px }
     .form-footer { grid-column:1/-1; display:flex; justify-content:flex-end; gap:9px; margin-top:2px }
@@ -133,7 +150,7 @@
     .toast { position:fixed; z-index:7; bottom:87px; left:50%; max-width:calc(100vw - 32px); padding:12px 17px; color:white; background:var(--deep); box-shadow:0 5px 25px #102e2733; font-size:11px; opacity:0; pointer-events:none; transform:translate(-50%,10px); transition:opacity .2s,transform .2s }
     .toast.show { opacity:1; transform:translate(-50%,0) }
     @keyframes arrive { from { opacity:0; transform:translateY(9px) } to { opacity:1; transform:translateY(0) } }
-    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important } .bubble-field { display:none } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; transition-duration:.01ms!important } }
     @media(max-width:860px) {
       .header-inner { padding:0 23px; grid-template-columns:1fr auto }
       .nav-links { display:none }
@@ -169,7 +186,6 @@
       .product-grid { gap:22px 11px }
       .product-name { font-size:16px }
       .product-price { font-size:10px }
-      .product-description { min-height:31px; font-size:9px }
       .buy-button { min-height:32px; font-size:9px }
       .edit-product-button,.delete-product-button { min-height:32px; padding:0 7px; font-size:9px }
       .product-tag { top:8px; left:8px; padding:5px 6px; font-size:7px }
@@ -186,19 +202,6 @@
   </style>
 </head>
 <body>
-  <div class="bubble-field" aria-hidden="true">
-    <span class="bubble" style="--x:7%;--size:32px;--duration:14s;--delay:-8s;--drift:25px"></span>
-    <span class="bubble" style="--x:16%;--size:48px;--duration:17s;--delay:-2s;--drift:-35px"></span>
-    <span class="bubble" style="--x:27%;--size:27px;--duration:12s;--delay:-10s;--drift:28px"></span>
-    <span class="bubble" style="--x:38%;--size:43px;--duration:16s;--delay:-5s;--drift:-24px"></span>
-    <span class="bubble" style="--x:49%;--size:31px;--duration:13s;--delay:-1s;--drift:36px"></span>
-    <span class="bubble" style="--x:59%;--size:54px;--duration:18s;--delay:-12s;--drift:-30px"></span>
-    <span class="bubble" style="--x:69%;--size:36px;--duration:15s;--delay:-7s;--drift:22px"></span>
-    <span class="bubble" style="--x:78%;--size:47px;--duration:17s;--delay:-3s;--drift:-38px"></span>
-    <span class="bubble" style="--x:87%;--size:28px;--duration:12s;--delay:-9s;--drift:30px"></span>
-    <span class="bubble" style="--x:95%;--size:40px;--duration:16s;--delay:-4s;--drift:-25px"></span>
-  </div>
-  <div class="site-content">
   <div class="announcement">ENVÍOS A TODA COLOMBIA · PAGOS SEGUROS · HECHO CON DETALLE</div>
   <header class="site-header">
     <div class="header-inner">
@@ -222,43 +225,69 @@
   </main>
   <footer class="footer"><div class="footer-inner"><div class="footer-brand">Betel <span class="footer-note">· Joyería para tus momentos</span></div><div class="footer-contacts"><a class="footer-contact" href="https://wa.me/573212276095" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M9 9a4 4 0 0 0 6 6l-1.5-1.5-1.2.5a5 5 0 0 1-2.3-2.3l.5-1.2Z"/></svg>321 227 6095</a><a class="footer-contact" href="mailto:joyeriabetel12@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>joyeriabetel12@gmail.com</a></div></div><div class="copyright">© <span id="year"></span> Betel Joyería. Hecho con cariño en Colombia.</div></footer>
   <dialog id="product-dialog" aria-labelledby="dialog-title"><div class="dialog-head"><div><h3 id="dialog-title">Agregar una joya</h3><p>Completa los detalles para tu catálogo.</p></div><button class="close-button" id="close-dialog" type="button" aria-label="Cerrar">×</button></div>
-    <form class="product-form" id="product-form"><input id="product-id" type="hidden"><div class="field full"><label for="product-name">Nombre de la joya</label><input id="product-name" name="name" required maxlength="60" placeholder="Ej. Aretes Aurora"></div><div class="field"><label for="product-price">Precio (COP)</label><input id="product-price" name="price" type="number" min="1" step="100" required placeholder="Ej. 89000"></div><div class="field"><label for="product-category">Categoría</label><select id="product-category" name="category" required><option value="Collares">Collares</option><option value="Aretes">Aretes</option><option value="Anillos">Anillos</option><option value="Pulseras">Pulseras</option></select></div><div class="field full"><label for="product-description">Descripción</label><textarea id="product-description" name="description" maxlength="110" placeholder="Material, acabado o detalle especial"></textarea></div><div class="field full"><label for="product-image">Foto de la joya</label><input id="product-image" name="image" type="file" accept="image/*"><span class="file-hint">Elige una imagen desde tu dispositivo. Se ajustará para guardar espacio. Al editar, dejar vacío conserva la foto actual.</span></div><p class="form-error" id="form-error" role="alert"></p><div class="form-footer"><button class="cancel-button" id="cancel-dialog" type="button">Cancelar</button><button class="save-button" id="save-product" type="submit">Guardar joya</button></div></form>
+    <form class="product-form" id="product-form"><input id="product-id" type="hidden"><div class="field full"><label for="product-name">Nombre de la joya</label><input id="product-name" name="name" required maxlength="60" placeholder="Ej. Aretes Aurora"></div><div class="field"><label for="product-price">Precio en pesos colombianos ($ COP)</label><input id="product-price" name="price" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="price-help" placeholder="Ej. 1.250.000"><span class="file-hint" id="price-help">Puedes escribir puntos como separadores. Ejemplo: 1.250.000</span></div><div class="field"><label for="product-category">Categoría</label><select id="product-category" name="category" required><option value="Collares">Collares</option><option value="Dijes">Dijes</option><option value="Aretes">Aretes</option><option value="Anillos">Anillos</option><option value="Pulseras">Pulseras</option></select></div><div class="field full"><label for="product-description">Descripción</label><textarea id="product-description" name="description" placeholder="Material, acabado o detalle especial"></textarea></div><div class="field full"><label>Fotos para el carrusel</label><label class="image-picker">+ Elegir fotos del PC<input id="product-image" name="image" class="visually-hidden" type="file" multiple aria-describedby="image-help"></label><span class="file-hint" id="image-help">El selector muestra todos los archivos para que encuentres tus fotos. Puedes agregarlas en tandas; el sitio las convierte al formato del catálogo. El navegador debe poder abrir el formato de origen.</span><div class="image-preview-list" id="image-preview-list" aria-live="polite"></div></div><p class="form-error" id="form-error" role="alert"></p><div class="form-footer"><button class="cancel-button" id="cancel-dialog" type="button">Cancelar</button><button class="save-button" id="save-product" type="submit">Guardar joya</button></div></form>
   </dialog>
+  <dialog id="details-dialog" aria-labelledby="details-title"><div class="dialog-head"><div><h3 id="details-title">Detalles del artículo</h3><p id="details-subtitle"></p></div><button class="close-button" id="close-details" type="button" aria-label="Cerrar detalles">×</button></div><div class="details-content"><span class="details-category" id="details-category"></span><p class="details-price" id="details-price"></p><p class="details-description" id="details-description"></p></div><div class="details-footer"><button class="cancel-button" id="close-details-footer" type="button">Cerrar</button></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  </div>
   <script>
     (() => {
       const STORAGE_KEY = "betel-joyeria-products-v1";
       const LEGACY_STORAGE_KEY = "lumina-joyeria-products-v1";
+      const HIDDEN_DEMO_DIJE_KEY = "betel-joyeria-hidden-demo-dije-v1";
       const phone = "573212276095";
       const starterProducts = [
-        {id:"betel-01",name:"Collar Luz de Luna",category:"Collares",price:119000,description:"Dije delicado en acabado dorado",image:"https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=82"},
-        {id:"betel-02",name:"Aretes Aura",category:"Aretes",price:89000,description:"Un destello para todos los días",image:"https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=82"},
-        {id:"betel-03",name:"Anillo Renacer",category:"Anillos",price:135000,description:"Líneas suaves, carácter propio",image:"https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=82"},
-        {id:"betel-04",name:"Pulsera Serena",category:"Pulseras",price:97000,description:"Un detalle que va contigo",image:"https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=800&q=82"},
-        {id:"betel-05",name:"Collar Constelación",category:"Collares",price:145000,description:"Un pequeño universo cerca de ti",image:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82"},
-        {id:"betel-06",name:"Aretes Brisa",category:"Aretes",price:79000,description:"Livianos, luminosos, inolvidables",image:"https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=82"},
-        {id:"betel-07",name:"Anillo Alba",category:"Anillos",price:128000,description:"Silueta clásica con luz nueva",image:"https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=82"},
-        {id:"betel-08",name:"Pulsera Vínculo",category:"Pulseras",price:105000,description:"Para celebrar lo que nos une",image:"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=800&q=82"}
+        {id:"betel-01",name:"Collar Luz de Luna",category:"Collares",price:119000,description:"Dije delicado en acabado dorado",image:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=82"]},
+        {id:"betel-02",name:"Aretes Aura",category:"Aretes",price:89000,description:"Un destello para todos los días",image:"https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=82"]},
+        {id:"betel-03",name:"Anillo Renacer",category:"Anillos",price:135000,description:"Líneas suaves, carácter propio",image:"https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=82"]},
+        {id:"betel-04",name:"Pulsera Serena",category:"Pulseras",price:97000,description:"Un detalle que va contigo",image:"https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=800&q=82"]},
+        {id:"betel-05",name:"Collar Constelación",category:"Collares",price:145000,description:"Un pequeño universo cerca de ti",image:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=82"]},
+        {id:"betel-06",name:"Aretes Brisa",category:"Aretes",price:79000,description:"Livianos, luminosos, inolvidables",image:"https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=82"]},
+        {id:"betel-07",name:"Anillo Alba",category:"Anillos",price:128000,description:"Silueta clásica con luz nueva",image:"https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1603561591411-07134e71a2a9?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=82"]},
+        {id:"betel-08",name:"Pulsera Vínculo",category:"Pulseras",price:105000,description:"Para celebrar lo que nos une",image:"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=800&q=82"]},
+        {id:"betel-dije-demo",name:"Dije Esmeralda",category:"Dijes",price:79000,description:"Dije de inspiración esmeralda con acabado dorado. Agrega tus propias fotos desde Gestionar para reemplazar este ejemplo.",image:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=82"]}
       ];
-      const money = new Intl.NumberFormat("es-CO", {style:"currency",currency:"COP",maximumFractionDigits:0});
-      const grid = document.querySelector("#product-grid"), filtersNode = document.querySelector("#filters"), dialog = document.querySelector("#product-dialog"), form = document.querySelector("#product-form");
-      let products = loadProducts(), activeCategory = "Todas", searchTerm = "", toastTimer;
+      const grid = document.querySelector("#product-grid"), filtersNode = document.querySelector("#filters"), dialog = document.querySelector("#product-dialog"), detailsDialog = document.querySelector("#details-dialog"), form = document.querySelector("#product-form");
+      let products = loadProducts(), activeCategory = "Todas", searchTerm = "", toastTimer, formImages = [], processingImages = false;
 
+      function normalizeProducts(items) {
+        return items.map(item=>{
+          const images=Array.isArray(item.images)?item.images.filter(image=>typeof image==="string"&&image):[];
+          if(!images.length&&typeof item.image==="string"&&item.image)images.push(item.image);
+          if(!images.length)images.push(starterProducts[0].image);
+          const starter=starterProducts.find(product=>product.id===item.id);
+          const originalNecklaceImage="https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=82";
+          if(images.length===1&&starter&&starter.images&&(item.image===starter.image||(item.id==="betel-01"&&item.image===originalNecklaceImage)))images.splice(0,images.length,...starter.images);
+          return {...item,images,image:images[0]};
+        });
+      }
       function loadProducts() {
-        try { const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY); if (!saved) return starterProducts.map(item=>({...item})); const parsed = JSON.parse(saved); if (!localStorage.getItem(STORAGE_KEY)) localStorage.setItem(STORAGE_KEY,saved); return Array.isArray(parsed) ? parsed : starterProducts.map(item=>({...item})); }
-        catch { return starterProducts.map(item=>({...item})); }
+        try {
+          const saved=localStorage.getItem(STORAGE_KEY)||localStorage.getItem(LEGACY_STORAGE_KEY),demo=starterProducts.find(item=>item.id==="betel-dije-demo");
+          if(!saved)return normalizeProducts(starterProducts);
+          const parsed=JSON.parse(saved),loaded=Array.isArray(parsed)?normalizeProducts(parsed):normalizeProducts(starterProducts);
+          if(!localStorage.getItem(STORAGE_KEY))localStorage.setItem(STORAGE_KEY,saved);
+          if(demo&&localStorage.getItem(HIDDEN_DEMO_DIJE_KEY)!=="true"&&!loaded.some(item=>item.id===demo.id))loaded.unshift(demo);
+          return loaded;
+        }
+        catch { return normalizeProducts(starterProducts); }
       }
       function saveProducts() { try { localStorage.setItem(STORAGE_KEY,JSON.stringify(products)); return true; } catch { showToast("No hay espacio suficiente para guardar. Prueba con otra imagen."); return false; } }
       function escapeHtml(value) { return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]); }
+      function priceDigits(value) { const digits=String(value??"").replace(/\D/g,"").replace(/^0+(?=\d)/,""); return digits||"0"; }
+      function groupPrice(value) { return priceDigits(value).replace(/\B(?=(\d{3})+(?!\d))/g,"."); }
+      function formatCop(value) { return `$ ${groupPrice(value)} COP`; }
+      function parsePrice(value) { const trimmed=value.trim(); if(!trimmed||!/^[\d.]+$/.test(trimmed))return null; const digits=priceDigits(trimmed); return digits==="0"?null:digits; }
+      function getProductImages(product) { return Array.isArray(product.images)&&product.images.length?product.images:[product.image||starterProducts[0].image]; }
       function productCard(product) {
-        const name=escapeHtml(product.name), category=escapeHtml(product.category), description=escapeHtml(product.description||"Una pieza elegida con cariño"), image=escapeHtml(product.image);
-        const imageReference=/^https?:\/\//i.test(product.image)?` Imagen de referencia: ${product.image}.`:"";
-        const message=encodeURIComponent(`Hola, me interesa la joya ${product.name} (${money.format(product.price)}).${imageReference} ¿Me das más información?`);
-        return `<article class="product-card"><div class="product-image-wrap"><img class="product-image" src="${image}" alt="${name}" loading="lazy"><span class="product-tag">${category}</span></div><div class="product-meta"><div><h3 class="product-name">${name}</h3><p class="product-description">${description}</p></div><span class="product-price">${money.format(product.price)}</span></div><div class="product-actions"><a class="buy-button" href="https://wa.me/${phone}?text=${message}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M9 9a4 4 0 0 0 6 6l-1.5-1.5-1.2.5a5 5 0 0 1-2.3-2.3l.5-1.2Z"/></svg>Consultar</a><button class="edit-product-button admin-only" type="button" data-edit="${escapeHtml(product.id)}" aria-label="Editar ${name}">Editar</button><button class="delete-product-button admin-only" type="button" data-delete="${escapeHtml(product.id)}" aria-label="Eliminar ${name}">Eliminar</button></div></article>`;
+        const images=getProductImages(product),name=escapeHtml(product.name), category=escapeHtml(product.category), image=escapeHtml(images[0]);
+        const carousel=images.length>1?`<button class="carousel-control carousel-previous" type="button" data-slide="previous" data-product="${escapeHtml(product.id)}" aria-label="Foto anterior de ${name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><button class="carousel-control carousel-next" type="button" data-slide="next" data-product="${escapeHtml(product.id)}" aria-label="Foto siguiente de ${name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button><span class="image-count" aria-live="polite">1 / ${images.length}</span>`:"";
+        const photoUploadClass=product.category==="Dijes"?"carousel-add-photos":"carousel-add-photos admin-only";
+        const imageReference=/^https?:\/\//i.test(images[0])?` Imagen de referencia: ${images[0]}.`:"";
+        const message=encodeURIComponent(`Hola, me interesa la joya ${product.name} (${formatCop(product.price)}).${imageReference} ¿Me das más información?`);
+        return `<article class="product-card"><div class="product-image-wrap"><img class="product-image" src="${image}" data-image-index="0" alt="${name}" loading="lazy">${carousel}<button class="${photoUploadClass}" type="button" data-images="${escapeHtml(product.id)}" aria-label="Subir fotos desde el PC al carrusel de ${name}">+ Subir fotos</button><span class="product-tag">${category}</span></div><div class="product-meta"><div><h3 class="product-name">${name}</h3></div><span class="product-price">${formatCop(product.price)}</span></div><div class="product-actions"><a class="buy-button" href="https://wa.me/${phone}?text=${message}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M9 9a4 4 0 0 0 6 6l-1.5-1.5-1.2.5a5 5 0 0 1-2.3-2.3l.5-1.2Z"/></svg>Consultar</a><button class="details-button" type="button" data-details="${escapeHtml(product.id)}" aria-label="Ver detalles de ${name}">Ver detalles</button><button class="edit-product-button admin-only" type="button" data-edit="${escapeHtml(product.id)}" aria-label="Editar ${name}">Editar</button><button class="delete-product-button admin-only" type="button" data-delete="${escapeHtml(product.id)}" aria-label="Eliminar ${name}">Eliminar</button></div></article>`;
       }
       function render() {
-        const categories=["Todas",...new Set(products.map(item=>item.category).filter(Boolean))];
+        const categories=[...new Set(["Todas","Dijes",...products.map(item=>item.category).filter(Boolean)])];
         if (!categories.includes(activeCategory)) activeCategory="Todas";
         filtersNode.innerHTML=categories.map(category=>`<button class="filter${category===activeCategory?" active":""}" type="button" data-category="${escapeHtml(category)}" aria-pressed="${category===activeCategory}">${escapeHtml(category)}</button>`).join("");
         const visible=products.filter(item=>(activeCategory==="Todas"||item.category===activeCategory)&&`${item.name} ${item.category} ${item.description||""}`.toLocaleLowerCase("es").includes(searchTerm));
@@ -267,32 +296,138 @@
         document.body.classList.toggle("admin-mode",document.querySelector("#manage-toggle").getAttribute("aria-pressed")==="true");
       }
       function showToast(message) { const toast=document.querySelector("#toast"); toast.textContent=message; toast.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(()=>toast.classList.remove("show"),2900); }
-      function openForm(product) {
-        form.reset(); document.querySelector("#form-error").textContent=""; document.querySelector("#product-id").value=product?product.id:""; document.querySelector("#product-name").value=product?product.name:""; document.querySelector("#product-price").value=product?product.price:""; document.querySelector("#product-category").value=product?product.category:"Collares"; document.querySelector("#product-description").value=product?product.description:""; document.querySelector("#dialog-title").textContent=product?"Editar la joya":"Agregar una joya"; document.querySelector("#save-product").textContent=product?"Guardar cambios":"Guardar joya"; dialog.showModal(); document.querySelector("#product-name").focus();
+      function renderImagePreviews() {
+        const preview=document.querySelector("#image-preview-list");
+        const keepOne=document.querySelector("#product-id").value;
+        preview.innerHTML=formImages.length?formImages.map((image,index)=>`<div class="image-preview"><img src="${escapeHtml(image)}" alt="Foto ${index+1}"><button class="remove-image" type="button" data-remove-image="${index}" aria-label="Quitar foto ${index+1}"${keepOne&&formImages.length===1?" disabled":""}>×</button></div>`).join(""):`<span class="image-preview-empty">Aún no has agregado fotos.</span>`;
+      }
+      function openForm(product, focusImages=false) {
+        form.reset(); document.querySelector("#product-id").value=product?product.id:""; formImages=product?getProductImages(product).slice():[]; renderImagePreviews(); document.querySelector("#form-error").textContent=""; document.querySelector("#product-name").value=product?product.name:""; document.querySelector("#product-price").value=product?groupPrice(product.price):""; document.querySelector("#product-category").value=product?product.category:activeCategory!=="Todas"?activeCategory:"Collares"; document.querySelector("#product-description").value=product?product.description:""; document.querySelector("#dialog-title").textContent=product?(focusImages?"Fotos de la joya":"Editar la joya"):"Agregar una joya"; document.querySelector("#save-product").textContent=product?"Guardar cambios":"Guardar joya"; dialog.showModal(); document.querySelector(focusImages?"#product-image":"#product-name").focus();
+      }
+      function openImageManager(product) {
+        openForm(product,true);
+      }
+      function renderDetailsDescription(descriptionNode, text) {
+        descriptionNode.replaceChildren();
+        const lines=text.split(/\r?\n/);
+        lines.forEach((line,index)=>{
+          const trimmed=line.trim(),colonIndex=trimmed.indexOf(":");
+          if(index)descriptionNode.append(document.createElement("br"));
+          if(!trimmed) return;
+          if(trimmed.endsWith(":")){
+            const heading=document.createElement("strong");
+            heading.textContent=trimmed;
+            descriptionNode.append(heading);
+          }else if(colonIndex>0&&(trimmed.startsWith("•")||colonIndex<=42)){
+            const label=document.createElement("strong");
+            label.textContent=trimmed.slice(0,colonIndex+1);
+            descriptionNode.append(label,document.createTextNode(trimmed.slice(colonIndex+1)));
+          }else{
+            descriptionNode.append(document.createTextNode(line));
+          }
+        });
+      }
+      function openDetails(product) {
+        const description=document.querySelector("#details-description");
+        document.querySelector("#details-title").textContent=product.name;
+        document.querySelector("#details-subtitle").textContent="Información completa del artículo";
+        document.querySelector("#details-category").textContent=product.category;
+        document.querySelector("#details-price").textContent=formatCop(product.price);
+        renderDetailsDescription(description,product.description||"Este artículo no tiene una descripción adicional.");
+        description.classList.toggle("is-empty",!product.description);
+        detailsDialog.showModal();
+        document.querySelector("#close-details").focus();
       }
       function compressImage(file) {
-        return new Promise((resolve,reject)=>{ const reader=new FileReader(); reader.onerror=()=>reject(new Error("No pudimos leer esa imagen.")); reader.onload=()=>{ const image=new Image(); image.onerror=()=>reject(new Error("El archivo seleccionado no es una imagen válida.")); image.onload=()=>{ const scale=Math.min(1,1200/Math.max(image.naturalWidth,image.naturalHeight)),canvas=document.createElement("canvas"); canvas.width=Math.round(image.naturalWidth*scale); canvas.height=Math.round(image.naturalHeight*scale); canvas.getContext("2d").drawImage(image,0,0,canvas.width,canvas.height); resolve(canvas.toDataURL("image/jpeg",.78)); }; image.src=reader.result; }; reader.readAsDataURL(file); });
+        return new Promise((resolve,reject)=>{
+          const convert=(source,width,height,cleanup=()=>{})=>{
+            const scale=Math.min(1,1200/Math.max(width,height)),canvas=document.createElement("canvas");
+            canvas.width=Math.round(width*scale); canvas.height=Math.round(height*scale);
+            const context=canvas.getContext("2d");
+            if(!context){cleanup();reject(new Error("No pudimos preparar esa imagen."));return;}
+            try{context.drawImage(source,0,0,canvas.width,canvas.height);cleanup();resolve(canvas.toDataURL("image/jpeg",.78));}
+            catch{cleanup();reject(new Error("El navegador no pudo convertir esta imagen."));}
+          };
+          const readWithImageElement=()=>{
+            const reader=new FileReader();
+            reader.onerror=()=>reject(new Error(`No pudimos leer "${file.name}".`));
+            reader.onload=()=>{
+              const image=new Image();
+              image.onerror=()=>reject(new Error(`El formato de "${file.name}" no se puede abrir en este navegador.`));
+              image.onload=()=>convert(image,image.naturalWidth,image.naturalHeight);
+              image.src=reader.result;
+            };
+            reader.readAsDataURL(file);
+          };
+          if(typeof createImageBitmap==="function"){
+            createImageBitmap(file).then(bitmap=>convert(bitmap,bitmap.width,bitmap.height,()=>bitmap.close())).catch(readWithImageElement);
+          }else readWithImageElement();
+        });
       }
+      document.querySelector("#product-image").addEventListener("change",async event=>{
+        const input=event.currentTarget,files=Array.from(input.files),saveButton=document.querySelector("#save-product"),error=document.querySelector("#form-error");
+        if(!files.length)return;
+        processingImages=true; input.disabled=true; saveButton.disabled=true; saveButton.textContent="Preparando fotos..."; document.querySelector("#close-dialog").disabled=true; document.querySelector("#cancel-dialog").disabled=true; error.textContent="";
+        try{
+          const added=[];
+          for(const file of files){
+            try{added.push(await compressImage(file));}
+            catch(exception){throw new Error(exception.message||`No pudimos procesar "${file.name}".`);}
+          }
+          formImages.push(...added); renderImagePreviews();
+        }catch(exception){error.textContent=exception.message||"No pudimos preparar las fotos seleccionadas.";}
+        finally{
+          processingImages=false; input.value=""; input.disabled=false; saveButton.disabled=false; saveButton.textContent=document.querySelector("#product-id").value?"Guardar cambios":"Guardar joya"; document.querySelector("#close-dialog").disabled=false; document.querySelector("#cancel-dialog").disabled=false;
+        }
+      });
+      document.querySelector("#image-preview-list").addEventListener("click",event=>{
+        const button=event.target.closest("[data-remove-image]");
+        if(!button||button.disabled)return;
+        formImages.splice(Number(button.dataset.removeImage),1); renderImagePreviews();
+      });
       document.querySelector("#year").textContent=new Date().getFullYear();
       document.querySelector("#manage-toggle").addEventListener("click",event=>{ const button=event.currentTarget,enabled=button.getAttribute("aria-pressed")!=="true"; button.setAttribute("aria-pressed",String(enabled)); button.title=enabled?"Desactivar edición del catálogo":"Activar edición del catálogo"; document.querySelector("#manage-label").textContent=enabled?"Listo":"Gestionar"; render(); });
       document.querySelector("#add-product").addEventListener("click",()=>openForm(null));
-      document.querySelector("#close-dialog").addEventListener("click",()=>dialog.close());
-      document.querySelector("#cancel-dialog").addEventListener("click",()=>dialog.close());
-      dialog.addEventListener("click",event=>{ if(event.target===dialog) dialog.close(); });
+      document.querySelector("#close-details").addEventListener("click",()=>detailsDialog.close());
+      document.querySelector("#close-details-footer").addEventListener("click",()=>detailsDialog.close());
+      detailsDialog.addEventListener("click",event=>{if(event.target===detailsDialog)detailsDialog.close();});
+      document.querySelector("#product-price").addEventListener("blur",event=>{
+        const price=parsePrice(event.currentTarget.value);
+        if(price)event.currentTarget.value=groupPrice(price);
+      });
+      document.querySelector("#close-dialog").addEventListener("click",()=>{if(!processingImages)dialog.close();});
+      document.querySelector("#cancel-dialog").addEventListener("click",()=>{if(!processingImages)dialog.close();});
+      dialog.addEventListener("cancel",event=>{if(processingImages)event.preventDefault();});
+      dialog.addEventListener("click",event=>{ if(event.target===dialog&&!processingImages) dialog.close(); });
       document.querySelector("#search").addEventListener("input",event=>{ searchTerm=event.target.value.trim().toLocaleLowerCase("es"); render(); });
       filtersNode.addEventListener("click",event=>{ const button=event.target.closest("[data-category]"); if(!button)return; activeCategory=button.dataset.category; render(); });
       grid.addEventListener("click",event=>{
+        const details=event.target.closest("[data-details]");
+        if(details){const product=products.find(item=>item.id===details.dataset.details);if(product)openDetails(product);return;}
+        const manageImages=event.target.closest("[data-images]");
+        if(manageImages){const product=products.find(item=>item.id===manageImages.dataset.images);if(product)openImageManager(product);return;}
+        const slide=event.target.closest("[data-slide]");
+        if(slide){
+          const product=products.find(item=>item.id===slide.dataset.product);
+          if(!product)return;
+          const images=getProductImages(product),image=slide.closest(".product-image-wrap").querySelector(".product-image");
+          const direction=slide.dataset.slide==="next"?1:-1,index=(Number(image.dataset.imageIndex)+direction+images.length)%images.length;
+          image.src=images[index]; image.dataset.imageIndex=String(index); slide.closest(".product-image-wrap").querySelector(".image-count").textContent=`${index+1} / ${images.length}`;
+          return;
+        }
         const edit=event.target.closest("[data-edit]"),remove=event.target.closest("[data-delete]");
         if(edit){const product=products.find(item=>item.id===edit.dataset.edit);if(product)openForm(product);}
-        if(remove){const product=products.find(item=>item.id===remove.dataset.delete);if(!product||!confirm(`¿Eliminar ${product.name} del catálogo?`))return;const previous=products;products=products.filter(item=>item.id!==product.id);if(saveProducts()){render();showToast("Joya eliminada del catálogo.");}else products=previous;}
+        if(remove){const product=products.find(item=>item.id===remove.dataset.delete);if(!product||!confirm(`¿Eliminar ${product.name} del catálogo?`))return;const previous=products;let previousDemoFlag=null;if(product.id==="betel-dije-demo"){try{previousDemoFlag=localStorage.getItem(HIDDEN_DEMO_DIJE_KEY);localStorage.setItem(HIDDEN_DEMO_DIJE_KEY,"true");}catch{showToast("No se pudo guardar el cambio en este navegador.");return;}}products=products.filter(item=>item.id!==product.id);if(saveProducts()){render();showToast("Joya eliminada del catálogo.");}else{products=previous;if(product.id==="betel-dije-demo"){try{if(previousDemoFlag===null)localStorage.removeItem(HIDDEN_DEMO_DIJE_KEY);else localStorage.setItem(HIDDEN_DEMO_DIJE_KEY,previousDemoFlag);}catch{showToast("No se pudo restaurar el estado anterior del dije de muestra.");}}}}
       });
-      form.addEventListener("submit",async event=>{
-        event.preventDefault(); const saveButton=document.querySelector("#save-product"),error=document.querySelector("#form-error"),existingId=document.querySelector("#product-id").value,existing=products.find(item=>item.id===existingId),file=document.querySelector("#product-image").files[0];
-        saveButton.disabled=true;saveButton.textContent=file?"Preparando imagen...":"Guardando...";error.textContent="";
+      form.addEventListener("submit",event=>{
+        event.preventDefault(); if(processingImages)return; const saveButton=document.querySelector("#save-product"),error=document.querySelector("#form-error"),existingId=document.querySelector("#product-id").value,existing=products.find(item=>item.id===existingId);
+        saveButton.disabled=true;saveButton.textContent="Guardando...";error.textContent="";
         try{
-          const image=file?await compressImage(file):existing?.image||starterProducts[0].image;
-          const updated={id:existingId||`joya-${Date.now()}`,name:document.querySelector("#product-name").value.trim(),price:Number(document.querySelector("#product-price").value),category:document.querySelector("#product-category").value,description:document.querySelector("#product-description").value.trim(),image};
-          if(!updated.name||!Number.isFinite(updated.price)||updated.price<1)throw new Error("Revisa el nombre y el precio de la joya.");
+          const price=parsePrice(document.querySelector("#product-price").value);
+          if(!price)throw new Error("Escribe un precio mayor que cero. Puedes usar puntos como separadores.");
+          const images=formImages.length?formImages.slice():[existing?.image||starterProducts[0].image];
+          const updated={id:existingId||`joya-${Date.now()}`,name:document.querySelector("#product-name").value.trim(),price,category:document.querySelector("#product-category").value,description:document.querySelector("#product-description").value.trim(),images,image:images[0]};
+          if(!updated.name)throw new Error("Escribe el nombre de la joya.");
           const previous=products;products=existing?products.map(item=>item.id===existingId?updated:item):[updated,...products];
           if(!saveProducts()){products=previous;return;}
           dialog.close();render();showToast(existing?"Cambios guardados en tu catálogo.":"Joya agregada a tu catálogo.");
