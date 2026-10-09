@@ -255,7 +255,14 @@
         {id:"betel-dije-demo",name:"Dije Esmeralda",category:"Dijes",price:79000,description:"Dije de inspiración esmeralda con acabado dorado. Agrega tus propias fotos desde Gestionar para reemplazar este ejemplo.",image:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=82"]}
       ];
       const uploadedProducts = [
-        {id:"uploaded-anillo-esmeralda-eterna",name:"Anillo Esmeralda Eterna",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.08.00 PM.jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM.jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (1).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (2).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (3).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (4).jpg"]},
+        {id:"uploaded-anillo-esmeralda-eterna",name:"Anillo Esmeralda Eterna",category:"Anillos",price:160000,description:`JOYERÍA BETEL • ANILLO ESMERALDA ETERNA
+
+Ref: JB-01-AEE
+• Gema Central: Esmeralda legítima de origen natural con engaste clásico de precisión en 4 garras.
+• Brillo Lateral: Carril lateralizado sutil con circones facetados de alta pureza (Calidad AAAA).
+• Estructura: Plata Esterlina Ley 925 con acabado de baño electrolítico de Rodio (pulido espejo hipoalergénico).
+• Empaque: Estuche rígido texturizado de lujo.
+"La elegancia de una gema única, diseñada para perdurar por siempre."`,images:["Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.08.00 PM.jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM.jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (1).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (2).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (3).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (4).jpg"]},
         {id:"uploaded-anillo-isabella",name:"Anillo Isabella",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.38.41 PM.jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM.jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (1).jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (2).jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (3).jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (4).jpg"]},
         {id:"uploaded-anillo-mariposa",name:"Anillo Mariposa",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.28.47 PM.jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM.jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (1).jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (2).jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (3).jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (4).jpg"]},
         {id:"uploaded-anillo-solitario",name:"Anillo Solitario",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.06.57 PM.jpg","Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.08.17 PM.jpg","Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.09.51 PM.jpg","Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.09.51 PM (1).jpg"]},
@@ -281,17 +288,12 @@
           const saved=localStorage.getItem(STORAGE_KEY)||localStorage.getItem(LEGACY_STORAGE_KEY),demo=starterProducts.find(item=>item.id==="betel-dije-demo");
           if(!saved)return normalizeProducts([...starterProducts,...uploadedProducts]);
           const parsed=JSON.parse(saved),loaded=Array.isArray(parsed)?normalizeProducts(parsed):normalizeProducts(starterProducts);
-          if(!localStorage.getItem(STORAGE_KEY))localStorage.setItem(STORAGE_KEY,saved);
           if(demo&&localStorage.getItem(HIDDEN_DEMO_DIJE_KEY)!=="true"&&!loaded.some(item=>item.id===demo.id))loaded.unshift(demo);
           const missingUploads=uploadedProducts.filter(upload=>!loaded.some(item=>item.id===upload.id));
-          if(missingUploads.length){
-            loaded.unshift(...normalizeProducts(missingUploads));
-            try{localStorage.setItem(STORAGE_KEY,JSON.stringify(loaded));}
-            catch{showToast("Las joyas y sus fotos se cargaron, pero no se pudieron guardar en este navegador.");}
-          }
+          if(missingUploads.length)loaded.unshift(...normalizeProducts(missingUploads));
           return loaded;
         }
-        catch { return normalizeProducts(starterProducts); }
+        catch { return normalizeProducts([...starterProducts,...uploadedProducts]); }
       }
       function saveProducts() { try { localStorage.setItem(STORAGE_KEY,JSON.stringify(products)); return true; } catch { showToast("No hay espacio suficiente para guardar. Prueba con otra imagen."); return false; } }
       function loadRingDraftSlots() {
@@ -302,9 +304,7 @@
             if(Array.isArray(slots)&&slots.length===7&&slots.every(slot=>typeof slot==="string"))return slots;
             throw new Error("Los espacios de Anillos guardados no tienen un formato válido.");
           }
-          const slots=Array.from({length:7},(_,index)=>`anillo-adicional-${index+1}`);
-          localStorage.setItem(RING_DRAFT_SLOTS_KEY,JSON.stringify(slots));
-          return slots;
+          return Array.from({length:7},(_,index)=>`anillo-adicional-${index+1}`);
         } catch(error) {
           showToast(error.message||"No se pudieron preparar los espacios de Anillos en este navegador.");
           return [];
