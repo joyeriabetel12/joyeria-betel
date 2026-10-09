@@ -265,7 +265,7 @@ Ref: JB-01-AEE
 "La elegancia de una gema única, diseñada para perdurar por siempre."`,images:["Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.08.00 PM.jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM.jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (1).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (2).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (3).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (4).jpg"]},
         {id:"uploaded-anillo-isabella",name:"Anillo Isabella",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.38.41 PM.jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM.jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (1).jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (2).jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (3).jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (4).jpg"]},
         {id:"uploaded-anillo-mariposa",name:"Anillo Mariposa",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.28.47 PM.jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM.jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (1).jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (2).jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (3).jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (4).jpg"]},
-        {id:"uploaded-anillo-solitario",name:"Anillo Solitario",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.06.57 PM.jpg","Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.08.17 PM.jpg","Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.09.51 PM.jpg","Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.09.51 PM (1).jpg"]},
+        {id:"uploaded-anillo-solitario",name:"Anillo Solitario",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Doble Corona/WhatsApp Image 2026-10-07 at 1.06.57 PM.jpg","Joyeria/Anillo Doble Corona/WhatsApp Image 2026-10-07 at 1.08.17 PM.jpg","Joyeria/Anillo Doble Corona/WhatsApp Image 2026-10-07 at 1.09.51 PM.jpg","Joyeria/Anillo Doble Corona/WhatsApp Image 2026-10-07 at 1.09.51 PM (1).jpg"]},
         {id:"uploaded-dije-corazon-esmeralda",name:"Dije Corazón de Esmeralda",category:"Dijes",price:null,description:"",images:["Joyeria/Dije Corazón de Esmeralda/WhatsApp Image 2026-10-07 at 10.23.49 AM.jpeg","Joyeria/Dije Corazón de Esmeralda/WhatsApp Image 2026-10-07 at 10.40.08 AM.jpeg"]},
         {id:"uploaded-pulsera-hombre-oro-18k",name:"Pulsera para hombre en oro 18k",category:"Pulseras",price:null,description:"",images:["Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 3.32.33 PM.jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 3.32.33 PM (1).jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.26.00 PM.jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM.jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM (1).jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM (2).jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM (3).jpg"]}
       ];
@@ -274,7 +274,11 @@ Ref: JB-01-AEE
 
       function normalizeProducts(items) {
         return items.map(item=>{
-          const images=Array.isArray(item.images)?item.images.filter(image=>typeof image==="string"&&image):[];
+          const images=Array.isArray(item.images)?item.images.filter(image=>typeof image==="string"&&image).map(image=>
+            item.id==="uploaded-anillo-solitario"&&image.startsWith("Joyeria/Anillo Solitario/")
+              ?image.replace("Joyeria/Anillo Solitario/","Joyeria/Anillo Doble Corona/")
+              :image
+          ):[];
           if(!images.length&&typeof item.image==="string"&&item.image)images.push(item.image);
           if(!images.length)images.push(starterProducts[0].image);
           const starter=starterProducts.find(product=>product.id===item.id);
@@ -304,10 +308,12 @@ Ref: JB-01-AEE
           const saved=localStorage.getItem(RING_DRAFT_SLOTS_KEY);
           if(saved!==null){
             const slots=JSON.parse(saved);
-            if(Array.isArray(slots)&&slots.length===7&&slots.every(slot=>typeof slot==="string"))return slots;
+            if(Array.isArray(slots)&&slots.length>=7&&slots.every(slot=>typeof slot==="string"&&slot)&&new Set(slots).size===slots.length){
+              return [...slots,...Array.from({length:Math.max(0,11-slots.length)},(_,index)=>`anillo-adicional-${slots.length+index+1}`)];
+            }
             throw new Error("Los espacios de Anillos guardados no tienen un formato válido.");
           }
-          return Array.from({length:7},(_,index)=>`anillo-adicional-${index+1}`);
+          return Array.from({length:11},(_,index)=>`anillo-adicional-${index+1}`);
         } catch(error) {
           showToast(error.message||"No se pudieron preparar los espacios de Anillos en este navegador.");
           return [];
@@ -332,7 +338,7 @@ Ref: JB-01-AEE
         return `<article class="product-card ring-draft-card"><div class="product-image-wrap"><div class="ring-draft-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5 10 2h4l2 3"/><path d="M4 9a8 8 0 1 0 16 0l-2-4H6Z"/><path d="m9 9 3 2 3-2"/></svg><h3 class="ring-draft-title">Anillo nuevo ${slotNumber}</h3><p class="ring-draft-copy">Añade el nombre, el precio y las fotos de tu carrusel.</p><button class="ring-draft-button" type="button" data-ring-draft="${escapeHtml(slot)}">Completar carrusel</button></div></div></article>`;
       }
       function render() {
-        const categories=[...new Set(["Todas","Dijes",...products.map(item=>item.category).filter(Boolean)])];
+        const categories=[...new Set(["Todas","Dijes",...products.map(item=>item.category).filter(category=>category&&category!=="Collares")])];
         if (!categories.includes(activeCategory)) activeCategory="Todas";
         filtersNode.innerHTML=categories.map(category=>`<button class="filter${category===activeCategory?" active":""}" type="button" data-category="${escapeHtml(category)}" aria-pressed="${category===activeCategory}">${escapeHtml(category)}</button>`).join("");
         const visible=products.filter(item=>(activeCategory==="Todas"||item.category===activeCategory)&&`${item.name} ${item.category} ${item.description||""}`.toLocaleLowerCase("es").includes(searchTerm));
