@@ -65,6 +65,12 @@
     .product-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px 18px }
     .product-card { min-width:0; animation:arrive .38s ease both }
     .product-image-wrap { position:relative; overflow:hidden; aspect-ratio:.89; background:#eeece5 }
+    .ring-draft-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:20px; border:1px dashed #c9c8bd; color:#62685e; background:linear-gradient(145deg,#f5f3ec,#ecebe3); text-align:center }
+    .ring-draft-placeholder svg { width:34px; height:34px; color:var(--gold) }
+    .ring-draft-title { margin:0; color:var(--ink); font:500 18px/1.25 var(--serif) }
+    .ring-draft-copy { margin:0; font-size:10px; line-height:1.6 }
+    .ring-draft-button { min-height:34px; padding:0 12px; border:1px solid var(--forest); border-radius:2px; color:white; background:var(--forest); font-size:10px; font-weight:600 }
+    .ring-draft-button:hover { background:var(--deep) }
     .product-image { width:100%; height:100%; display:block; object-fit:cover; transition:transform .5s }
     .product-card:hover .product-image { transform:scale(1.035) }
     .carousel-control { position:absolute; top:50%; width:34px; height:34px; display:grid; place-items:center; padding:0; border:1px solid #ffffffa6; border-radius:50%; color:var(--deep); background:#fbfaf7d9; box-shadow:0 2px 10px #102e2726; transform:translateY(-50%); transition:background .2s }
@@ -80,6 +86,8 @@
     .product-name { margin:0; font:500 18px/1.25 var(--serif) }
     .product-price { flex:none; margin-top:3px; color:var(--forest); font-size:12px; font-weight:700; white-space:nowrap }
     .product-actions { display:flex; gap:8px; margin-top:12px }
+    .admin-mode .product-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px }
+    .admin-mode .product-actions>* { min-width:0; padding-right:6px; padding-left:6px }
     .buy-button,.details-button,.edit-product-button,.delete-product-button { min-height:34px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid var(--forest); border-radius:2px; font-size:10px; transition:background .2s,color .2s }
     .buy-button { flex:1; color:white; background:var(--forest) }
     .buy-button:hover { background:var(--deep) }
@@ -101,7 +109,6 @@
     .details-footer { display:flex; justify-content:flex-end; padding:0 25px 23px }
     .admin-only { display:none }
     body.admin-mode .admin-only { display:inline-flex }
-    body.admin-mode .buy-button { display:none }
     .empty-state { grid-column:1/-1; padding:60px 20px; border:1px dashed #d5d4cb; color:var(--muted); text-align:center; font-size:13px }
     .story { min-height:328px; display:grid; grid-template-columns:1fr 1fr; background:#f0efe9 }
     .story-image { min-height:328px; background:url("https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=1200&q=85") center 54%/cover }
@@ -225,7 +232,7 @@
   </main>
   <footer class="footer"><div class="footer-inner"><div class="footer-brand">Bethel <span class="footer-note">· Joyería para tus momentos</span></div><div class="footer-contacts"><a class="footer-contact" href="https://wa.me/573212276095" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M9 9a4 4 0 0 0 6 6l-1.5-1.5-1.2.5a5 5 0 0 1-2.3-2.3l.5-1.2Z"/></svg>321 227 6095</a><a class="footer-contact" href="mailto:joyeriabetel12@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>joyeriabetel12@gmail.com</a></div></div><div class="copyright">© <span id="year"></span> Bethel Joyería. Hecho con cariño en Colombia.</div></footer>
   <dialog id="product-dialog" aria-labelledby="dialog-title"><div class="dialog-head"><div><h3 id="dialog-title">Agregar una joya</h3><p>Completa los detalles para tu catálogo.</p></div><button class="close-button" id="close-dialog" type="button" aria-label="Cerrar">×</button></div>
-    <form class="product-form" id="product-form"><input id="product-id" type="hidden"><div class="field full"><label for="product-name">Nombre de la joya</label><input id="product-name" name="name" required maxlength="60" placeholder="Ej. Aretes Aurora"></div><div class="field"><label for="product-price">Precio en pesos colombianos ($ COP)</label><input id="product-price" name="price" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="price-help" placeholder="Ej. 1.250.000"><span class="file-hint" id="price-help">Puedes escribir puntos como separadores. Ejemplo: 1.250.000</span></div><div class="field"><label for="product-category">Categoría</label><select id="product-category" name="category" required><option value="Collares">Collares</option><option value="Dijes">Dijes</option><option value="Aretes">Aretes</option><option value="Anillos">Anillos</option><option value="Pulseras">Pulseras</option></select></div><div class="field full"><label for="product-description">Descripción</label><textarea id="product-description" name="description" placeholder="Material, acabado o detalle especial"></textarea></div><div class="field full"><label>Fotos para el carrusel</label><label class="image-picker">+ Elegir fotos del PC<input id="product-image" name="image" class="visually-hidden" type="file" multiple aria-describedby="image-help"></label><span class="file-hint" id="image-help">El selector muestra todos los archivos para que encuentres tus fotos. Puedes agregarlas en tandas; el sitio las convierte al formato del catálogo. El navegador debe poder abrir el formato de origen.</span><div class="image-preview-list" id="image-preview-list" aria-live="polite"></div></div><p class="form-error" id="form-error" role="alert"></p><div class="form-footer"><button class="cancel-button" id="cancel-dialog" type="button">Cancelar</button><button class="save-button" id="save-product" type="submit">Guardar joya</button></div></form>
+    <form class="product-form" id="product-form"><input id="product-id" type="hidden"><input id="product-draft-slot" type="hidden"><div class="field full"><label for="product-name">Nombre de la joya</label><input id="product-name" name="name" required maxlength="60" placeholder="Ej. Aretes Aurora"></div><div class="field"><label for="product-price">Precio en pesos colombianos ($ COP)</label><input id="product-price" name="price" type="text" inputmode="numeric" autocomplete="off" required aria-describedby="price-help" placeholder="Ej. 1.250.000"><span class="file-hint" id="price-help">Puedes escribir puntos como separadores. Ejemplo: 1.250.000</span></div><div class="field"><label for="product-category">Categoría</label><select id="product-category" name="category" required><option value="Collares">Collares</option><option value="Dijes">Dijes</option><option value="Aretes">Aretes</option><option value="Anillos">Anillos</option><option value="Pulseras">Pulseras</option></select></div><div class="field full"><label for="product-description">Descripción</label><textarea id="product-description" name="description" placeholder="Material, acabado o detalle especial"></textarea></div><div class="field full"><label>Fotos para el carrusel</label><label class="image-picker">+ Elegir fotos del PC<input id="product-image" name="image" class="visually-hidden" type="file" multiple aria-describedby="image-help"></label><span class="file-hint" id="image-help">El selector muestra todos los archivos para que encuentres tus fotos. Puedes agregarlas en tandas; el sitio las convierte al formato del catálogo. El navegador debe poder abrir el formato de origen.</span><div class="image-preview-list" id="image-preview-list" aria-live="polite"></div></div><p class="form-error" id="form-error" role="alert"></p><div class="form-footer"><button class="cancel-button" id="cancel-dialog" type="button">Cancelar</button><button class="save-button" id="save-product" type="submit">Guardar joya</button></div></form>
   </dialog>
   <dialog id="details-dialog" aria-labelledby="details-title"><div class="dialog-head"><div><h3 id="details-title">Detalles del artículo</h3><p id="details-subtitle"></p></div><button class="close-button" id="close-details" type="button" aria-label="Cerrar detalles">×</button></div><div class="details-content"><span class="details-category" id="details-category"></span><p class="details-price" id="details-price"></p><p class="details-description" id="details-description"></p></div><div class="details-footer"><button class="cancel-button" id="close-details-footer" type="button">Cerrar</button></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -234,6 +241,7 @@
       const STORAGE_KEY = "betel-joyeria-products-v1";
       const LEGACY_STORAGE_KEY = "lumina-joyeria-products-v1";
       const HIDDEN_DEMO_DIJE_KEY = "betel-joyeria-hidden-demo-dije-v1";
+      const RING_DRAFT_SLOTS_KEY = "betel-joyeria-ring-draft-slots-v1";
       const phone = "573212276095";
       const starterProducts = [
         {id:"betel-01",name:"Collar Luz de Luna",category:"Collares",price:119000,description:"Dije delicado en acabado dorado",image:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=82"]},
@@ -246,8 +254,16 @@
         {id:"betel-08",name:"Pulsera Vínculo",category:"Pulseras",price:105000,description:"Para celebrar lo que nos une",image:"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=800&q=82"]},
         {id:"betel-dije-demo",name:"Dije Esmeralda",category:"Dijes",price:79000,description:"Dije de inspiración esmeralda con acabado dorado. Agrega tus propias fotos desde Gestionar para reemplazar este ejemplo.",image:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=82"]}
       ];
+      const uploadedProducts = [
+        {id:"uploaded-anillo-esmeralda-eterna",name:"Anillo Esmeralda Eterna",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.08.00 PM.jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM.jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (1).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (2).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (3).jpg","Joyeria/Anillo Esmeralda Eterna/WhatsApp Image 2026-10-07 at 7.10.07 PM (4).jpg"]},
+        {id:"uploaded-anillo-isabella",name:"Anillo Isabella",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.38.41 PM.jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM.jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (1).jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (2).jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (3).jpg","Joyeria/Anillo Isabella/WhatsApp Image 2026-10-07 at 6.39.52 PM (4).jpg"]},
+        {id:"uploaded-anillo-mariposa",name:"Anillo Mariposa",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.28.47 PM.jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM.jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (1).jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (2).jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (3).jpg","Joyeria/Anillo Mariposa/WhatsApp Image 2026-10-07 at 1.32.16 PM (4).jpg"]},
+        {id:"uploaded-anillo-solitario",name:"Anillo Solitario",category:"Anillos",price:null,description:"",images:["Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.06.57 PM.jpg","Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.08.17 PM.jpg","Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.09.51 PM.jpg","Joyeria/Anillo Solitario/WhatsApp Image 2026-10-07 at 1.09.51 PM (1).jpg"]},
+        {id:"uploaded-dije-corazon-esmeralda",name:"Dije Corazón de Esmeralda",category:"Dijes",price:null,description:"",images:["Joyeria/Dije Corazón de Esmeralda/WhatsApp Image 2026-10-07 at 10.23.49 AM.jpeg","Joyeria/Dije Corazón de Esmeralda/WhatsApp Image 2026-10-07 at 10.40.08 AM.jpeg"]},
+        {id:"uploaded-pulsera-hombre-oro-18k",name:"Pulsera para hombre en oro 18k",category:"Pulseras",price:null,description:"",images:["Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 3.32.33 PM.jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 3.32.33 PM (1).jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.26.00 PM.jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM.jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM (1).jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM (2).jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM (3).jpg"]}
+      ];
       const grid = document.querySelector("#product-grid"), filtersNode = document.querySelector("#filters"), dialog = document.querySelector("#product-dialog"), detailsDialog = document.querySelector("#details-dialog"), form = document.querySelector("#product-form");
-      let products = loadProducts(), activeCategory = "Todas", searchTerm = "", toastTimer, formImages = [], processingImages = false;
+      let products = loadProducts(), activeCategory = "Todas", searchTerm = "", toastTimer, formImages = [], processingImages = false, formDirty = false, ringDraftSlots = [];
 
       function normalizeProducts(items) {
         return items.map(item=>{
@@ -263,28 +279,54 @@
       function loadProducts() {
         try {
           const saved=localStorage.getItem(STORAGE_KEY)||localStorage.getItem(LEGACY_STORAGE_KEY),demo=starterProducts.find(item=>item.id==="betel-dije-demo");
-          if(!saved)return normalizeProducts(starterProducts);
+          if(!saved)return normalizeProducts([...starterProducts,...uploadedProducts]);
           const parsed=JSON.parse(saved),loaded=Array.isArray(parsed)?normalizeProducts(parsed):normalizeProducts(starterProducts);
           if(!localStorage.getItem(STORAGE_KEY))localStorage.setItem(STORAGE_KEY,saved);
           if(demo&&localStorage.getItem(HIDDEN_DEMO_DIJE_KEY)!=="true"&&!loaded.some(item=>item.id===demo.id))loaded.unshift(demo);
+          const missingUploads=uploadedProducts.filter(upload=>!loaded.some(item=>item.id===upload.id));
+          if(missingUploads.length){
+            loaded.unshift(...normalizeProducts(missingUploads));
+            try{localStorage.setItem(STORAGE_KEY,JSON.stringify(loaded));}
+            catch{showToast("Las joyas y sus fotos se cargaron, pero no se pudieron guardar en este navegador.");}
+          }
           return loaded;
         }
         catch { return normalizeProducts(starterProducts); }
       }
       function saveProducts() { try { localStorage.setItem(STORAGE_KEY,JSON.stringify(products)); return true; } catch { showToast("No hay espacio suficiente para guardar. Prueba con otra imagen."); return false; } }
+      function loadRingDraftSlots() {
+        try {
+          const saved=localStorage.getItem(RING_DRAFT_SLOTS_KEY);
+          if(saved!==null){
+            const slots=JSON.parse(saved);
+            if(Array.isArray(slots)&&slots.length===7&&slots.every(slot=>typeof slot==="string"))return slots;
+            throw new Error("Los espacios de Anillos guardados no tienen un formato válido.");
+          }
+          const slots=Array.from({length:7},(_,index)=>`anillo-adicional-${index+1}`);
+          localStorage.setItem(RING_DRAFT_SLOTS_KEY,JSON.stringify(slots));
+          return slots;
+        } catch(error) {
+          showToast(error.message||"No se pudieron preparar los espacios de Anillos en este navegador.");
+          return [];
+        }
+      }
       function escapeHtml(value) { return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]); }
       function priceDigits(value) { const digits=String(value??"").replace(/\D/g,"").replace(/^0+(?=\d)/,""); return digits||"0"; }
       function groupPrice(value) { return priceDigits(value).replace(/\B(?=(\d{3})+(?!\d))/g,"."); }
-      function formatCop(value) { return `$ ${groupPrice(value)} COP`; }
+      function formatCop(value) { return value===null||value===undefined||value===""||Number(value)<=0?"Precio por consultar":`$ ${groupPrice(value)} COP`; }
       function parsePrice(value) { const trimmed=value.trim(); if(!trimmed||!/^[\d.]+$/.test(trimmed))return null; const digits=priceDigits(trimmed); return digits==="0"?null:digits; }
       function getProductImages(product) { return Array.isArray(product.images)&&product.images.length?product.images:[product.image||starterProducts[0].image]; }
       function productCard(product) {
         const images=getProductImages(product),name=escapeHtml(product.name), category=escapeHtml(product.category), image=escapeHtml(images[0]);
         const carousel=images.length>1?`<button class="carousel-control carousel-previous" type="button" data-slide="previous" data-product="${escapeHtml(product.id)}" aria-label="Foto anterior de ${name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><button class="carousel-control carousel-next" type="button" data-slide="next" data-product="${escapeHtml(product.id)}" aria-label="Foto siguiente de ${name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button><span class="image-count" aria-live="polite">1 / ${images.length}</span>`:"";
-        const photoUploadClass=product.category==="Dijes"?"carousel-add-photos":"carousel-add-photos admin-only";
+        const photoUploadClass=["Dijes","Anillos"].includes(product.category)?"carousel-add-photos":"carousel-add-photos admin-only";
         const imageReference=/^https?:\/\//i.test(images[0])?` Imagen de referencia: ${images[0]}.`:"";
         const message=encodeURIComponent(`Hola, me interesa la joya ${product.name} (${formatCop(product.price)}).${imageReference} ¿Me das más información?`);
         return `<article class="product-card"><div class="product-image-wrap"><img class="product-image" src="${image}" data-image-index="0" alt="${name}" loading="lazy">${carousel}<button class="${photoUploadClass}" type="button" data-images="${escapeHtml(product.id)}" aria-label="Subir fotos desde el PC al carrusel de ${name}">+ Subir fotos</button><span class="product-tag">${category}</span></div><div class="product-meta"><div><h3 class="product-name">${name}</h3></div><span class="product-price">${formatCop(product.price)}</span></div><div class="product-actions"><a class="buy-button" href="https://wa.me/${phone}?text=${message}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M9 9a4 4 0 0 0 6 6l-1.5-1.5-1.2.5a5 5 0 0 1-2.3-2.3l.5-1.2Z"/></svg>Consultar</a><button class="details-button" type="button" data-details="${escapeHtml(product.id)}" aria-label="Ver detalles de ${name}">Ver detalles</button><button class="edit-product-button admin-only" type="button" data-edit="${escapeHtml(product.id)}" aria-label="Editar ${name}">Editar</button><button class="delete-product-button admin-only" type="button" data-delete="${escapeHtml(product.id)}" aria-label="Eliminar ${name}">Eliminar</button></div></article>`;
+      }
+      function ringDraftCard(slot) {
+        const slotNumber=ringDraftSlots.indexOf(slot)+1;
+        return `<article class="product-card ring-draft-card"><div class="product-image-wrap"><div class="ring-draft-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5 10 2h4l2 3"/><path d="M4 9a8 8 0 1 0 16 0l-2-4H6Z"/><path d="m9 9 3 2 3-2"/></svg><h3 class="ring-draft-title">Anillo nuevo ${slotNumber}</h3><p class="ring-draft-copy">Añade el nombre, el precio y las fotos de tu carrusel.</p><button class="ring-draft-button" type="button" data-ring-draft="${escapeHtml(slot)}">Completar carrusel</button></div></div></article>`;
       }
       function render() {
         const categories=[...new Set(["Todas","Dijes",...products.map(item=>item.category).filter(Boolean)])];
@@ -292,8 +334,11 @@
         filtersNode.innerHTML=categories.map(category=>`<button class="filter${category===activeCategory?" active":""}" type="button" data-category="${escapeHtml(category)}" aria-pressed="${category===activeCategory}">${escapeHtml(category)}</button>`).join("");
         const visible=products.filter(item=>(activeCategory==="Todas"||item.category===activeCategory)&&`${item.name} ${item.category} ${item.description||""}`.toLocaleLowerCase("es").includes(searchTerm));
         document.querySelector("#catalog-count").textContent=`${visible.length} ${visible.length===1?"pieza disponible":"piezas disponibles"}`;
-        grid.innerHTML=visible.length?visible.map(productCard).join(""):`<div class="empty-state">No encontramos joyas con esa búsqueda. Prueba otra palabra o categoría.</div>`;
-        document.body.classList.toggle("admin-mode",document.querySelector("#manage-toggle").getAttribute("aria-pressed")==="true");
+        const adminMode=document.querySelector("#manage-toggle").getAttribute("aria-pressed")==="true";
+        const completedSlots=new Set(products.map(item=>item.ringDraftSlot).filter(Boolean));
+        const availableRingDrafts=adminMode&&activeCategory==="Anillos"&&!searchTerm?ringDraftSlots.filter(slot=>!completedSlots.has(slot)): [];
+        grid.innerHTML=visible.length||availableRingDrafts.length?[...visible.map(productCard),...availableRingDrafts.map(ringDraftCard)].join(""):`<div class="empty-state">No encontramos joyas con esa búsqueda. Prueba otra palabra o categoría.</div>`;
+        document.body.classList.toggle("admin-mode",adminMode);
       }
       function showToast(message) { const toast=document.querySelector("#toast"); toast.textContent=message; toast.classList.add("show"); clearTimeout(toastTimer); toastTimer=setTimeout(()=>toast.classList.remove("show"),2900); }
       function renderImagePreviews() {
@@ -301,8 +346,8 @@
         const keepOne=document.querySelector("#product-id").value;
         preview.innerHTML=formImages.length?formImages.map((image,index)=>`<div class="image-preview"><img src="${escapeHtml(image)}" alt="Foto ${index+1}"><button class="remove-image" type="button" data-remove-image="${index}" aria-label="Quitar foto ${index+1}"${keepOne&&formImages.length===1?" disabled":""}>×</button></div>`).join(""):`<span class="image-preview-empty">Aún no has agregado fotos.</span>`;
       }
-      function openForm(product, focusImages=false) {
-        form.reset(); document.querySelector("#product-id").value=product?product.id:""; formImages=product?getProductImages(product).slice():[]; renderImagePreviews(); document.querySelector("#form-error").textContent=""; document.querySelector("#product-name").value=product?product.name:""; document.querySelector("#product-price").value=product?groupPrice(product.price):""; document.querySelector("#product-category").value=product?product.category:activeCategory!=="Todas"?activeCategory:"Collares"; document.querySelector("#product-description").value=product?product.description:""; document.querySelector("#dialog-title").textContent=product?(focusImages?"Fotos de la joya":"Editar la joya"):"Agregar una joya"; document.querySelector("#save-product").textContent=product?"Guardar cambios":"Guardar joya"; dialog.showModal(); document.querySelector(focusImages?"#product-image":"#product-name").focus();
+      function openForm(product, focusImages=false, draftSlot="") {
+        form.reset(); formDirty=false; document.querySelector("#product-id").value=product?product.id:""; document.querySelector("#product-draft-slot").value=draftSlot; formImages=product?getProductImages(product).slice():[]; renderImagePreviews(); document.querySelector("#form-error").textContent=""; document.querySelector("#product-name").value=product?product.name:""; document.querySelector("#product-price").value=product&&product.price?groupPrice(product.price):""; document.querySelector("#product-category").value=product?product.category:draftSlot?"Anillos":activeCategory!=="Todas"?activeCategory:"Collares"; document.querySelector("#product-description").value=product?product.description:""; document.querySelector("#dialog-title").textContent=draftSlot?"Completar carrusel de Anillos":product?(focusImages?"Fotos de la joya":"Editar la joya"):"Agregar una joya"; document.querySelector("#save-product").textContent=product?"Guardar cambios":draftSlot?"Guardar anillo":"Guardar joya"; dialog.showModal(); document.querySelector(focusImages?"#product-image":"#product-name").focus();
       }
       function openImageManager(product) {
         openForm(product,true);
@@ -374,7 +419,7 @@
             try{added.push(await compressImage(file));}
             catch(exception){throw new Error(exception.message||`No pudimos procesar "${file.name}".`);}
           }
-          formImages.push(...added); renderImagePreviews();
+          formImages.push(...added); formDirty=true; renderImagePreviews();
         }catch(exception){error.textContent=exception.message||"No pudimos preparar las fotos seleccionadas.";}
         finally{
           processingImages=false; input.value=""; input.disabled=false; saveButton.disabled=false; saveButton.textContent=document.querySelector("#product-id").value?"Guardar cambios":"Guardar joya"; document.querySelector("#close-dialog").disabled=false; document.querySelector("#cancel-dialog").disabled=false;
@@ -383,7 +428,7 @@
       document.querySelector("#image-preview-list").addEventListener("click",event=>{
         const button=event.target.closest("[data-remove-image]");
         if(!button||button.disabled)return;
-        formImages.splice(Number(button.dataset.removeImage),1); renderImagePreviews();
+        formImages.splice(Number(button.dataset.removeImage),1); formDirty=true; renderImagePreviews();
       });
       document.querySelector("#year").textContent=new Date().getFullYear();
       document.querySelector("#manage-toggle").addEventListener("click",event=>{ const button=event.currentTarget,enabled=button.getAttribute("aria-pressed")!=="true"; button.setAttribute("aria-pressed",String(enabled)); button.title=enabled?"Desactivar edición del catálogo":"Activar edición del catálogo"; document.querySelector("#manage-label").textContent=enabled?"Listo":"Gestionar"; render(); });
@@ -395,13 +440,26 @@
         const price=parsePrice(event.currentTarget.value);
         if(price)event.currentTarget.value=groupPrice(price);
       });
-      document.querySelector("#close-dialog").addEventListener("click",()=>{if(!processingImages)dialog.close();});
-      document.querySelector("#cancel-dialog").addEventListener("click",()=>{if(!processingImages)dialog.close();});
-      dialog.addEventListener("cancel",event=>{if(processingImages)event.preventDefault();});
-      dialog.addEventListener("click",event=>{ if(event.target===dialog&&!processingImages) dialog.close(); });
+      const closeForm=()=>{
+        if(processingImages)return;
+        if(formDirty&&!confirm("Tienes cambios sin guardar. ¿Deseas cerrar y perderlos?"))return;
+        formDirty=false; dialog.close();
+      };
+      document.querySelector("#close-dialog").addEventListener("click",closeForm);
+      document.querySelector("#cancel-dialog").addEventListener("click",closeForm);
+      dialog.addEventListener("cancel",event=>{
+        if(processingImages||formDirty&&!confirm("Tienes cambios sin guardar. ¿Deseas cerrar y perderlos?"))event.preventDefault();
+        else formDirty=false;
+      });
+      dialog.addEventListener("click",event=>{if(event.target===dialog)closeForm();});
+      form.addEventListener("input",event=>{if(!(event.target instanceof HTMLInputElement&&event.target.type==="file"))formDirty=true;});
+      form.addEventListener("change",event=>{if(!(event.target instanceof HTMLInputElement&&event.target.type==="file"))formDirty=true;});
+      form.addEventListener("keydown",event=>{if(event.key==="Enter"&&event.target instanceof HTMLInputElement&&event.target.type!=="file")event.preventDefault();});
       document.querySelector("#search").addEventListener("input",event=>{ searchTerm=event.target.value.trim().toLocaleLowerCase("es"); render(); });
       filtersNode.addEventListener("click",event=>{ const button=event.target.closest("[data-category]"); if(!button)return; activeCategory=button.dataset.category; render(); });
       grid.addEventListener("click",event=>{
+        const draft=event.target.closest("[data-ring-draft]");
+        if(draft){openForm(null,false,draft.dataset.ringDraft);return;}
         const details=event.target.closest("[data-details]");
         if(details){const product=products.find(item=>item.id===details.dataset.details);if(product)openDetails(product);return;}
         const manageImages=event.target.closest("[data-images]");
@@ -425,15 +483,18 @@
         try{
           const price=parsePrice(document.querySelector("#product-price").value);
           if(!price)throw new Error("Escribe un precio mayor que cero. Puedes usar puntos como separadores.");
+          const draftSlot=document.querySelector("#product-draft-slot").value;
+          if(draftSlot&&!formImages.length)throw new Error("Agrega al menos una foto para completar el carrusel de este anillo.");
           const images=formImages.length?formImages.slice():[existing?.image||starterProducts[0].image];
-          const updated={id:existingId||`joya-${Date.now()}`,name:document.querySelector("#product-name").value.trim(),price,category:document.querySelector("#product-category").value,description:document.querySelector("#product-description").value.trim(),images,image:images[0]};
+          const updated={id:existingId||`joya-${Date.now()}`,name:document.querySelector("#product-name").value.trim(),price,category:document.querySelector("#product-category").value,description:document.querySelector("#product-description").value.trim(),images,image:images[0],...(draftSlot?{ringDraftSlot:draftSlot}:existing?.ringDraftSlot?{ringDraftSlot:existing.ringDraftSlot}:{})};
           if(!updated.name)throw new Error("Escribe el nombre de la joya.");
           const previous=products;products=existing?products.map(item=>item.id===existingId?updated:item):[updated,...products];
           if(!saveProducts()){products=previous;return;}
-          dialog.close();render();showToast(existing?"Cambios guardados en tu catálogo.":"Joya agregada a tu catálogo.");
+          formDirty=false; dialog.close();render();showToast(existing?"Cambios guardados en tu catálogo.":"Joya agregada a tu catálogo.");
         }catch(exception){error.textContent=exception.message||"No pudimos guardar esta joya.";}
         finally{saveButton.disabled=false;saveButton.textContent=existing?"Guardar cambios":"Guardar joya";}
       });
+      ringDraftSlots=loadRingDraftSlots();
       render();
     })();
   </script>
