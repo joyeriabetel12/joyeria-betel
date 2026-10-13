@@ -28,7 +28,8 @@
     .brand-sub { color:var(--gold); font-size:8px; letter-spacing:.28em; text-transform:uppercase }
     .header-actions { justify-self:end; display:flex; align-items:center; gap:12px }
     .text-link { color:#53574f; font-size:12px }
-    .manage-button { display:inline-flex; align-items:center; gap:8px; min-height:39px; padding:0 14px; border:1px solid #d9d8cf; border-radius:3px; color:var(--ink); background:transparent; font-size:11px; transition:background .2s,border-color .2s }
+    .manage-button { display:none; align-items:center; gap:8px; min-height:39px; padding:0 14px; border:1px solid #d9d8cf; border-radius:3px; color:var(--ink); background:transparent; font-size:11px; transition:background .2s,border-color .2s }
+    .local-admin-enabled .manage-button { display:inline-flex }
     .manage-button:hover { border-color:var(--forest); background:#f1f2ec }
     .manage-button[aria-pressed=true] { border-color:var(--forest); color:white; background:var(--forest) }
     .hero { position:relative; min-height:444px; display:flex; align-items:center; overflow:hidden; color:white; background:var(--forest) }
@@ -103,9 +104,9 @@
     .details-description.is-empty { color:var(--muted); font-style:italic }
     .details-footer { display:flex; justify-content:flex-end; padding:0 25px 23px }
     .admin-only { display:none }
-    body.admin-mode .admin-only { display:inline-flex }
+    html.local-admin-enabled body.admin-mode .admin-only { display:inline-flex }
     .favicon-manager.admin-only { display:none }
-    body.admin-mode .favicon-manager.admin-only { display:flex }
+    html.local-admin-enabled body.admin-mode .favicon-manager.admin-only { display:flex }
     .favicon-manager { max-width:1280px; margin:0 auto; padding:16px 36px; align-items:center; justify-content:space-between; gap:18px; border-bottom:1px solid var(--line); background:#f5f3ec }
     .favicon-manager-copy { display:grid; gap:4px }
     .favicon-manager-copy strong { font:500 15px/1.3 var(--serif) }
@@ -213,6 +214,7 @@
       .dialog-head { padding:18px 17px 14px }
     }
   </style>
+  <script>if(location.protocol==="file:"||["localhost","127.0.0.1","::1","[::1]"].includes(location.hostname))document.documentElement.classList.add("local-admin-enabled");</script>
 </head>
 <body>
   <div class="announcement">ENVÍOS A TODA COLOMBIA · PAGOS SEGUROS · HECHO CON DETALLE</div>
@@ -251,6 +253,7 @@
       const STORAGE_KEY = "betel-joyeria-products-v1";
       const LEGACY_STORAGE_KEY = "lumina-joyeria-products-v1";
       const FAVICON_STORAGE_KEY = "betel-joyeria-favicon-v2";
+      const localAdminEnabled=document.documentElement.classList.contains("local-admin-enabled");
       const phone = "573212276095";
       const DEFAULT_FAVICON = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#183e34"/><text x="32" y="45" text-anchor="middle" font-family="Georgia" font-size="44" fill="#e2c69b">B</text></svg>')}`;
       const TEST_PRODUCT_IDS=new Set(["betel-01","betel-02","betel-03","betel-04","betel-05","betel-06","betel-07","betel-08","betel-dije-demo"]);
@@ -424,7 +427,7 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
       function productCard(product) {
         const images=getProductImages(product),name=escapeHtml(product.name), category=escapeHtml(product.category), image=escapeHtml(images[0]);
         const carousel=images.length>1?`<button class="carousel-control carousel-previous" type="button" data-slide="previous" data-product="${escapeHtml(product.id)}" aria-label="Foto anterior de ${name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button><button class="carousel-control carousel-next" type="button" data-slide="next" data-product="${escapeHtml(product.id)}" aria-label="Foto siguiente de ${name}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button><span class="image-count" aria-live="polite">1 / ${images.length}</span>`:"";
-        const photoUploadClass=["Dijes","Anillos"].includes(product.category)?"carousel-add-photos":"carousel-add-photos admin-only";
+        const photoUploadClass="carousel-add-photos admin-only";
         const imageReference=/^https?:\/\//i.test(images[0])?` Imagen de referencia: ${images[0]}.`:"";
         const message=encodeURIComponent(`Hola, me interesa la joya ${product.name} (${formatCop(product.price)}).${imageReference} ¿Me das más información?`);
         return `<article class="product-card"><div class="product-image-wrap"><img class="product-image" src="${image}" data-image-index="0" alt="${name}" loading="lazy">${carousel}<button class="${photoUploadClass}" type="button" data-images="${escapeHtml(product.id)}" aria-label="Subir fotos desde el PC al carrusel de ${name}">+ Subir fotos</button><span class="product-tag">${category}</span></div><div class="product-meta"><div><h3 class="product-name">${name}</h3></div><span class="product-price">${formatCop(product.price)}</span></div><div class="product-actions"><a class="buy-button" href="https://wa.me/${phone}?text=${message}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/><path d="M9 9a4 4 0 0 0 6 6l-1.5-1.5-1.2.5a5 5 0 0 1-2.3-2.3l.5-1.2Z"/></svg>Consultar</a><button class="details-button" type="button" data-details="${escapeHtml(product.id)}" aria-label="Ver detalles de ${name}">Ver detalles</button><button class="edit-product-button admin-only" type="button" data-edit="${escapeHtml(product.id)}" aria-label="Editar ${name}">Editar</button><button class="delete-product-button admin-only" type="button" data-delete="${escapeHtml(product.id)}" aria-label="Eliminar ${name}">Eliminar</button></div></article>`;
@@ -435,7 +438,7 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
         filtersNode.innerHTML=categories.map(category=>`<button class="filter${category===activeCategory?" active":""}" type="button" data-category="${escapeHtml(category)}" aria-pressed="${category===activeCategory}">${escapeHtml(category)}</button>`).join("");
         const visible=products.filter(item=>(activeCategory==="Todas"||item.category===activeCategory)&&`${item.name} ${item.category} ${item.description||""}`.toLocaleLowerCase("es").includes(searchTerm));
         document.querySelector("#catalog-count").textContent=`${visible.length} ${visible.length===1?"pieza disponible":"piezas disponibles"}`;
-        const adminMode=document.querySelector("#manage-toggle").getAttribute("aria-pressed")==="true";
+        const adminMode=localAdminEnabled&&document.querySelector("#manage-toggle").getAttribute("aria-pressed")==="true";
         grid.innerHTML=visible.length?visible.map(productCard).join(""):`<div class="empty-state">No encontramos joyas con esa búsqueda. Prueba otra palabra o categoría.</div>`;
         document.body.classList.toggle("admin-mode",adminMode);
       }
@@ -446,9 +449,11 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
         preview.innerHTML=formImages.length?formImages.map((image,index)=>`<div class="image-preview"><img src="${escapeHtml(image)}" alt="Foto ${index+1}"><button class="remove-image" type="button" data-remove-image="${index}" aria-label="Quitar foto ${index+1}"${keepOne&&formImages.length===1?" disabled":""}>×</button></div>`).join(""):`<span class="image-preview-empty">Aún no has agregado fotos.</span>`;
       }
       function openForm(product, focusImages=false) {
+        if(!localAdminEnabled)return;
         form.reset(); formDirty=false; document.querySelector("#autosave-status").textContent="Los cambios se guardan automáticamente."; document.querySelector("#product-id").value=product?product.id:""; formImages=product?getProductImages(product).slice():[]; renderImagePreviews(); document.querySelector("#form-error").textContent=""; document.querySelector("#product-name").value=product?product.name:""; document.querySelector("#product-price").value=product?(product.priceDraft??(product.price?groupPrice(product.price):"")):""; document.querySelector("#product-category").value=product?product.category:activeCategory!=="Todas"?activeCategory:"Collares"; document.querySelector("#product-description").value=product?product.description:""; document.querySelector("#dialog-title").textContent=product?(focusImages?"Fotos de la joya":"Editar la joya"):"Agregar una joya"; document.querySelector("#save-product").textContent=product?"Guardar cambios":"Guardar joya"; dialog.showModal(); document.querySelector(focusImages?"#product-image":"#product-name").focus();
       }
       function autosaveForm() {
+        if(!localAdminEnabled)return;
         if(processingImages)return;
         const error=document.querySelector("#form-error"),status=document.querySelector("#autosave-status");
         const existingId=document.querySelector("#product-id").value,existing=products.find(item=>item.id===existingId);
@@ -563,8 +568,9 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
           }else readWithImageElement();
         });
       }
-      document.querySelector("#upload-favicon").addEventListener("click",()=>document.querySelector("#favicon-file").click());
+      document.querySelector("#upload-favicon").addEventListener("click",()=>{if(localAdminEnabled)document.querySelector("#favicon-file").click();});
       document.querySelector("#favicon-file").addEventListener("change",async event=>{
+        if(!localAdminEnabled)return;
         const input=event.currentTarget,button=document.querySelector("#upload-favicon"),file=input.files[0];
         if(!file)return;
         button.disabled=true; button.textContent="Preparando logo...";
@@ -580,6 +586,7 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
         }
       });
       document.querySelector("#reset-favicon").addEventListener("click",()=>{
+        if(!localAdminEnabled)return;
         try {
           localStorage.removeItem(FAVICON_STORAGE_KEY);
           updateFavicon(DEFAULT_FAVICON,"Icono predeterminado.");
@@ -589,6 +596,7 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
         }
       });
       document.querySelector("#product-image").addEventListener("change",async event=>{
+        if(!localAdminEnabled)return;
         const input=event.currentTarget,files=Array.from(input.files),saveButton=document.querySelector("#save-product"),error=document.querySelector("#form-error");
         if(!files.length)return;
         processingImages=true; input.disabled=true; saveButton.disabled=true; saveButton.textContent="Preparando fotos..."; document.querySelector("#close-dialog").disabled=true; document.querySelector("#cancel-dialog").disabled=true; error.textContent="";
@@ -605,14 +613,15 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
         }
       });
       document.querySelector("#image-preview-list").addEventListener("click",event=>{
+        if(!localAdminEnabled)return;
         const button=event.target.closest("[data-remove-image]");
         if(!button||button.disabled)return;
         formImages.splice(Number(button.dataset.removeImage),1); formDirty=true; renderImagePreviews(); autosaveForm();
       });
       document.querySelector("#year").textContent=new Date().getFullYear();
       loadFavicon();
-      document.querySelector("#manage-toggle").addEventListener("click",event=>{ const button=event.currentTarget,enabled=button.getAttribute("aria-pressed")!=="true"; button.setAttribute("aria-pressed",String(enabled)); button.title=enabled?"Desactivar edición del catálogo":"Activar edición del catálogo"; document.querySelector("#manage-label").textContent=enabled?"Listo":"Gestionar"; render(); });
-      document.querySelector("#add-product").addEventListener("click",()=>openForm(null));
+      document.querySelector("#manage-toggle").addEventListener("click",event=>{ if(!localAdminEnabled)return; const button=event.currentTarget,enabled=button.getAttribute("aria-pressed")!=="true"; button.setAttribute("aria-pressed",String(enabled)); button.title=enabled?"Desactivar edición del catálogo":"Activar edición del catálogo"; document.querySelector("#manage-label").textContent=enabled?"Listo":"Gestionar"; render(); });
+      document.querySelector("#add-product").addEventListener("click",()=>{if(localAdminEnabled)openForm(null);});
       document.querySelector("#close-details").addEventListener("click",()=>detailsDialog.close());
       document.querySelector("#close-details-footer").addEventListener("click",()=>detailsDialog.close());
       detailsDialog.addEventListener("click",event=>{if(event.target===detailsDialog)detailsDialog.close();});
@@ -641,7 +650,7 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
         const details=event.target.closest("[data-details]");
         if(details){const product=products.find(item=>item.id===details.dataset.details);if(product)openDetails(product);return;}
         const manageImages=event.target.closest("[data-images]");
-        if(manageImages){const product=products.find(item=>item.id===manageImages.dataset.images);if(product)openImageManager(product);return;}
+        if(manageImages){if(!localAdminEnabled)return;const product=products.find(item=>item.id===manageImages.dataset.images);if(product)openImageManager(product);return;}
         const slide=event.target.closest("[data-slide]");
         if(slide){
           const product=products.find(item=>item.id===slide.dataset.product);
@@ -652,11 +661,11 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
           return;
         }
         const edit=event.target.closest("[data-edit]"),remove=event.target.closest("[data-delete]");
-        if(edit){const product=products.find(item=>item.id===edit.dataset.edit);if(product)openForm(product);}
-        if(remove){const product=products.find(item=>item.id===remove.dataset.delete);if(!product||!confirm(`¿Eliminar ${product.name} del catálogo?`))return;const previous=products;products=products.filter(item=>item.id!==product.id);if(saveProducts()){render();showToast("Joya eliminada del catálogo.");}else products=previous;}
+        if(edit){if(!localAdminEnabled)return;const product=products.find(item=>item.id===edit.dataset.edit);if(product)openForm(product);}
+        if(remove){if(!localAdminEnabled)return;const product=products.find(item=>item.id===remove.dataset.delete);if(!product||!confirm(`¿Eliminar ${product.name} del catálogo?`))return;const previous=products;products=products.filter(item=>item.id!==product.id);if(saveProducts()){render();showToast("Joya eliminada del catálogo.");}else products=previous;}
       });
       form.addEventListener("submit",event=>{
-        event.preventDefault(); if(processingImages)return; const saveButton=document.querySelector("#save-product"),error=document.querySelector("#form-error"),existingId=document.querySelector("#product-id").value,existing=products.find(item=>item.id===existingId);
+        event.preventDefault(); if(!localAdminEnabled||processingImages)return; const saveButton=document.querySelector("#save-product"),error=document.querySelector("#form-error"),existingId=document.querySelector("#product-id").value,existing=products.find(item=>item.id===existingId);
         saveButton.disabled=true;saveButton.textContent="Guardando...";error.textContent="";
         try{
           const price=parsePrice(document.querySelector("#product-price").value);
