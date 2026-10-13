@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#183e34">
   <meta name="description" content="Joyas para llevar contigo todos los días. Descubre la colección de Betel y pide la tuya por WhatsApp.">
   <title>Betel Joyería | Joyas con historia</title>
-  <link id="site-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2212%22 fill=%22%23183e34%22/%3E%3Ctext x=%2232%22 y=%2245%22 text-anchor=%22middle%22 font-family=%22Georgia%22 font-size=%2244%22 fill=%22%23e2c69b%22%3EB%3C/text%3E%3C/svg%3E">
+  <link id="site-favicon" rel="icon" type="image/png" href="favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
@@ -260,7 +260,7 @@
       const RING_DRAFT_SLOTS_KEY = "betel-joyeria-ring-draft-slots-v1";
       const FAVICON_STORAGE_KEY = "betel-joyeria-favicon-v1";
       const phone = "573212276095";
-      const DEFAULT_FAVICON = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#183e34"/><text x="32" y="45" text-anchor="middle" font-family="Georgia" font-size="44" fill="#e2c69b">B</text></svg>')}`;
+      const DEFAULT_FAVICON = "favicon.png";
       const starterProducts = [
         {id:"betel-01",name:"Collar Luz de Luna",category:"Collares",price:119000,description:"Dije delicado en acabado dorado",image:"https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=82"]},
         {id:"betel-02",name:"Aretes Aura",category:"Aretes",price:89000,description:"Un destello para todos los días",image:"https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=82",images:["https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=82","https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=82"]},
@@ -350,7 +350,7 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
         {id:"uploaded-pulsera-hombre-oro-18k",name:"Pulsera para hombre en oro 18k",category:"Pulseras",price:null,description:"",images:["Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 3.32.33 PM.jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 3.32.33 PM (1).jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.26.00 PM.jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM.jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM (1).jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM (2).jpg","Joyeria/Pulsera para hombre en oro 18k/WhatsApp Image 2026-10-07 at 5.29.08 PM (3).jpg"]}
       ];
       const grid = document.querySelector("#product-grid"), filtersNode = document.querySelector("#filters"), dialog = document.querySelector("#product-dialog"), detailsDialog = document.querySelector("#details-dialog"), form = document.querySelector("#product-form");
-      let products = loadProducts(), activeCategory = "Todas", searchTerm = "", toastTimer, formImages = [], processingImages = false, formDirty = false, ringDraftSlots = [];
+      let toastTimer, formImages = [], processingImages = false, formDirty = false, ringDraftSlots = [];
 
       function normalizeProducts(items) {
         return items.map(item=>{
@@ -367,29 +367,27 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
           return {...item,images,image:images[0]};
         });
       }
+      const FIXED_PRODUCT_PRICES={
+        "uploaded-anillo-18k-corazon-esmeralda":1700000,
+        "uploaded-anillo-imperio":3500000,
+        "uploaded-anillo-corona-reina":180000,
+        "uploaded-anillo-reina-esmeralda":180000,
+        "uploaded-anillo-mariposa":180000,
+        "uploaded-anillo-solitario":170000,
+        "uploaded-dije-corazon-esmeralda":800000,
+        "uploaded-pulsera-hombre-oro-18k":3600000
+      };
+      function applyCatalogPrice(item) {
+        const price=FIXED_PRODUCT_PRICES[item.id];
+        if(price===undefined&&item.category!=="Anillos")return item;
+        const fixedPrice=price??160000;
+        return {...item,price:fixedPrice,priceDraft:groupPrice(fixedPrice)};
+      }
+      let products = loadProducts(), activeCategory = "Todas", searchTerm = "";
       function loadProducts() {
         try {
           const saved=localStorage.getItem(STORAGE_KEY)||localStorage.getItem(LEGACY_STORAGE_KEY),demo=starterProducts.find(item=>item.id==="betel-dije-demo");
-          const ringPrices={
-            "uploaded-anillo-18k-corazon-esmeralda":1700000,
-            "uploaded-anillo-imperio":3500000,
-            "uploaded-anillo-corona-reina":180000,
-            "uploaded-anillo-reina-esmeralda":180000,
-            "uploaded-anillo-mariposa":180000,
-            "uploaded-anillo-solitario":170000
-          };
-          const productPrices={
-            ...ringPrices,
-            "uploaded-dije-corazon-esmeralda":800000,
-            "uploaded-pulsera-hombre-oro-18k":3600000
-          };
-          const applyRingPrice=item=>{
-            const price=productPrices[item.id];
-            if(price===undefined&&item.category!=="Anillos")return item;
-            const fixedPrice=price??160000;
-            return {...item,price:fixedPrice,priceDraft:groupPrice(fixedPrice)};
-          };
-          if(!saved)return normalizeProducts([...starterProducts,...uploadedProducts]).map(applyRingPrice);
+          if(!saved)return normalizeProducts([...starterProducts,...uploadedProducts]).map(applyCatalogPrice);
           const parsed=JSON.parse(saved),loaded=Array.isArray(parsed)?normalizeProducts(parsed):normalizeProducts(starterProducts);
           if(demo&&localStorage.getItem(HIDDEN_DEMO_DIJE_KEY)!=="true"&&!loaded.some(item=>item.id===demo.id))loaded.unshift(demo);
           const enriched=loaded.map(item=>{
@@ -403,11 +401,11 @@ ASESORÍA: La cadena, los materiales y las características de la piedra pueden 
           });
           const missingUploads=uploadedProducts.filter(upload=>!enriched.some(item=>item.id===upload.id));
           if(missingUploads.length)enriched.unshift(...normalizeProducts(missingUploads));
-          return enriched.map(applyRingPrice);
+          return enriched.map(applyCatalogPrice);
         }
         catch {
           showToast("No se pudieron leer los productos guardados. Se muestran los productos disponibles.");
-          return normalizeProducts([...starterProducts,...uploadedProducts]);
+          return normalizeProducts([...starterProducts,...uploadedProducts]).map(applyCatalogPrice);
         }
       }
       function updateFavicon(dataUrl,status) {
